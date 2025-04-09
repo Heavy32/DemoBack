@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoBack", "DemoBack\DemoBack.csproj", "{C041F183-F6B8-40A6-BEC4-6A898C90E5F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCycle.Api", "DemoBack\FlowCycle.Api.csproj", "{C041F183-F6B8-40A6-BEC4-6A898C90E5F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCycle.Persistance", "FlowCycle.Persistance\FlowCycle.Persistance.csproj", "{86F07BD2-2AB6-4A11-BC04-EA71ED8E49B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCycle.Domain", "FlowCycle.Domain\FlowCycle.Domain.csproj", "{277DA846-1D81-4E3A-866C-84A2FFA80FAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{C041F183-F6B8-40A6-BEC4-6A898C90E5F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C041F183-F6B8-40A6-BEC4-6A898C90E5F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C041F183-F6B8-40A6-BEC4-6A898C90E5F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86F07BD2-2AB6-4A11-BC04-EA71ED8E49B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86F07BD2-2AB6-4A11-BC04-EA71ED8E49B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86F07BD2-2AB6-4A11-BC04-EA71ED8E49B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86F07BD2-2AB6-4A11-BC04-EA71ED8E49B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{277DA846-1D81-4E3A-866C-84A2FFA80FAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{277DA846-1D81-4E3A-866C-84A2FFA80FAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{277DA846-1D81-4E3A-866C-84A2FFA80FAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{277DA846-1D81-4E3A-866C-84A2FFA80FAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
