@@ -18,10 +18,16 @@ namespace FlowCycle.Api.Controllers
             this.mapper = mapper;
         }
 
-        public async Task<IActionResult> GetStockItemById(int id, CancellationToken ct)
+        public async Task<IActionResult> GetById(int id, CancellationToken ct)
         {
             var result = await storageItemService.GetById(id, ct);
-            return Ok(result);
+            var dto = mapper.Map<StockItemDto>(result);
+            return Ok(dto);
         }
+
+        //public async Task<IActionResult> GetList(CancellationToken ct)
+        //{
+
+        //}
     }
 }

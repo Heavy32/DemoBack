@@ -24,5 +24,14 @@ namespace FlowCycle.Domain.Stock
 
             return result;
         }
+
+        public async Task<IEnumerable<StockItem>> GetList(CancellationToken ct)
+        {
+            var dbResult = await context.Stocks.ToListAsync(ct);
+
+            var result = dbResult.Select(mapper.Map<StockItem>);
+
+            return result;
+        }
     }
 }

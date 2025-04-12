@@ -28,6 +28,8 @@ namespace FlowCycle.Api
         public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(StockProfiles));
+
+            return services;
         }
     }
 }
