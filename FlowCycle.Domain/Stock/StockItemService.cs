@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FlowCycle.Domain.Storage;
 using FlowCycle.Persistance;
+using FlowCycle.Persistance.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlowCycle.Domain.Stock
@@ -32,6 +33,36 @@ namespace FlowCycle.Domain.Stock
             var result = dbResult.Select(mapper.Map<StockItem>);
 
             return result;
+        }
+
+        public async Task<StockItem> Create(StockItem stockItem, CancellationToken ct)
+        {
+            var newItem = mapper.Map<StockItemDao>(stockItem);
+
+            context.Stocks.Add(newItem);
+
+            await context.SaveChangesAsync(ct);
+
+            return mapper.Map<StockItem>(newItem);
+        }
+
+        public async Task<StockItem> Update(StockItem stockItem, int id, CancellationToken ct)
+        {
+            var updatedItem = mapper.Map<StockItemDao>(stockItem);
+
+            context.Stocks.Update(updatedItem);
+
+            await context.SaveChangesAsync(ct);
+
+            return mapper.Map<StockItem>(updatedItem);
+        }
+
+        public async Task Delete(StockItem stockItem, CancellationToken ct)
+        {
+            var deletedItem = mapper.Map<StockItemDao>(stockItem);
+            context.Stocks.Remove(deletedItem);
+
+            await context.SaveChangesAsync(ct);
         }
     }
 }
