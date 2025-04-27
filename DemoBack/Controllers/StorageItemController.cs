@@ -3,11 +3,16 @@ using FlowCycle.Api.Storage;
 using FlowCycle.Domain.Stock;
 using FlowCycle.Domain.Storage;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace FlowCycle.Api.Controllers
 {
+    /// <summary>
+    /// API for managing storage items
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "Storage")]
     public class StorageItemController : ControllerBase
     {
         private readonly IStorageItemService _storageItemService;
@@ -19,26 +24,56 @@ namespace FlowCycle.Api.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Get a storage item by ID
+        /// </summary>
+        /// <param name="id">The ID of the storage item</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The requested storage item</returns>
         [HttpGet("{id}")]
+        [SwaggerOperation(OperationId = "GetStorageItemById")]
+        [SwaggerResponse(200, "Returns the storage item", typeof(StockItemDto))]
+        [SwaggerResponse(404, "Storage item not found")]
         public async Task<IActionResult> GetById(int id, CancellationToken ct)
         {
             var result = await _storageItemService.GetById(id, ct);
-            var dto = _mapper.Map<StockItemDto>(result);
+            if (result == null)
+            {
+                return NotFound();
+            }
 
+            var dto = _mapper.Map<StockItemDto>(result);
             return Ok(dto);
         }
 
+        /// <summary>
+        /// Get all storage items
+        /// </summary>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>List of all storage items</returns>
         [HttpGet]
+        [SwaggerOperation(OperationId = "GetAllStorageItems")]
+        [SwaggerResponse(200, "Returns all storage items", typeof(IEnumerable<StockItemDto>))]
         public async Task<IActionResult> GetList(CancellationToken ct)
         {
             var result = await _storageItemService.GetList(ct);
             var dto = result.Select(_mapper.Map<StockItemDto>);
-
             return Ok(dto);
         }
 
+        /// <summary>
+        /// Create a new storage item
+        /// </summary>
+        /// <param name="stockItemDto">Storage item data</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The created storage item</returns>
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] StockItemDto stockItemDto, CancellationToken ct)
+        [SwaggerOperation(OperationId = "CreateStorageItem")]
+        [SwaggerResponse(201, "Storage item created", typeof(StockItemDto))]
+        [SwaggerResponse(400, "Invalid input data")]
+        public async Task<IActionResult> Create(
+            [FromBody, SwaggerRequestBody("Storage item payload", Required = true)] StockItemDto stockItemDto,
+            CancellationToken ct)
         {
             var stockItem = _mapper.Map<StockItem>(stockItemDto);
             var result = await _storageItemService.Create(stockItem, ct);
@@ -47,22 +82,53 @@ namespace FlowCycle.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, resultDto);
         }
 
+        /// <summary>
+        /// Update an existing storage item
+        /// </summary>
+        /// <param name="id">ID of the storage item to update</param>
+        /// <param name="stockItemDto">Updated storage item data</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The updated storage item</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] StockItemDto stockItemDto, int id, CancellationToken ct)
+        [SwaggerOperation(OperationId = "UpdateStorageItem")]
+        [SwaggerResponse(200, "Storage item updated", typeof(StockItemDto))]
+        [SwaggerResponse(400, "Invalid input data")]
+        [SwaggerResponse(404, "Storage item not found")]
+        public async Task<IActionResult> Update(
+            int id,
+            [FromBody, SwaggerRequestBody("Updated storage item payload", Required = true)] StockItemDto stockItemDto,
+            CancellationToken ct)
         {
             var stockItem = _mapper.Map<StockItem>(stockItemDto);
             var result = await _storageItemService.Update(stockItem, id, ct);
-            var resultDto = _mapper.Map<StockItemDto>(result);
 
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            var resultDto = _mapper.Map<StockItemDto>(result);
             return Ok(resultDto);
         }
 
+        /// <summary>
+        /// Delete a storage item
+        /// </summary>
+        /// <param name="id">ID of the storage item to delete</param>
+        /// <param name="ct">Cancellation token</param>
         [HttpDelete("{id}")]
+        [SwaggerOperation(OperationId = "DeleteStorageItem")]
+        [SwaggerResponse(204, "Storage item deleted")]
+        [SwaggerResponse(404, "Storage item not found")]
         public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
             var stockItem = await _storageItemService.GetById(id, ct);
-            await _storageItemService.Delete(stockItem, ct);
+            if (stockItem == null)
+            {
+                return NotFound();
+            }
 
+            await _storageItemService.Delete(stockItem, ct);
             return NoContent();
         }
     }
