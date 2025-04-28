@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlowCycle.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250308085540_FullStorageCreation")]
-    partial class FullStorageCreation
+    [Migration("20250427191144_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace FlowCycle.Persistance.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("FlowCycle.Persistance.Storage.Category", b =>
+            modelBuilder.Entity("FlowCycle.Persistance.Storage.CategoryDao", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace FlowCycle.Persistance.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("FlowCycle.Persistance.Storage.Project", b =>
+            modelBuilder.Entity("FlowCycle.Persistance.Storage.ProjectDao", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +59,7 @@ namespace FlowCycle.Persistance.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("FlowCycle.Persistance.Storage.Stock", b =>
+            modelBuilder.Entity("FlowCycle.Persistance.Storage.StockItemDao", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,6 +76,9 @@ namespace FlowCycle.Persistance.Migrations
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Measure")
                         .IsRequired()
@@ -116,7 +119,7 @@ namespace FlowCycle.Persistance.Migrations
                     b.ToTable("Stocks");
                 });
 
-            modelBuilder.Entity("FlowCycle.Persistance.Storage.Supplier", b =>
+            modelBuilder.Entity("FlowCycle.Persistance.Storage.SupplierDao", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -133,21 +136,21 @@ namespace FlowCycle.Persistance.Migrations
                     b.ToTable("Suppliers");
                 });
 
-            modelBuilder.Entity("FlowCycle.Persistance.Storage.Stock", b =>
+            modelBuilder.Entity("FlowCycle.Persistance.Storage.StockItemDao", b =>
                 {
-                    b.HasOne("FlowCycle.Persistance.Storage.Category", "Category")
+                    b.HasOne("FlowCycle.Persistance.Storage.CategoryDao", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FlowCycle.Persistance.Storage.Project", "Project")
+                    b.HasOne("FlowCycle.Persistance.Storage.ProjectDao", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FlowCycle.Persistance.Storage.Supplier", "Supplier")
+                    b.HasOne("FlowCycle.Persistance.Storage.SupplierDao", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)

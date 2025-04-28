@@ -1,45 +1,51 @@
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+WORKDIR /source
 
 # Copy solution file and main project files
-COPY DemoBack.sln .
-COPY DemoBack/FlowCycle.Api.csproj ./DemoBack/
-COPY FlowCycle.Domain/FlowCycle.Domain.csproj ./FlowCycle.Domain/
-COPY FlowCycle.Persistance/FlowCycle.Persistance.csproj ./FlowCycle.Persistance/
+COPY ["DemoBack.sln", "./"]
+COPY ["DemoBack/FlowCycle.Api.csproj", "DemoBack/"]
+COPY ["FlowCycle.Domain/FlowCycle.Domain.csproj", "FlowCycle.Domain/"]
+COPY ["FlowCycle.Persistance/FlowCycle.Persistance.csproj", "FlowCycle.Persistance/"]
 
 # Restore dependencies
-RUN dotnet restore "DemoBack/FlowCycle.Api.csproj"
+RUN dotnet restore
 
 # Copy everything else
 COPY . .
 
 # Build and publish
-WORKDIR "/src/DemoBack"
-RUN dotnet publish "FlowCycle.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "DemoBack/FlowCycle.Api.csproj" -c Release -o /app/publish
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 WORKDIR /app
 
-# Install ICU for localization (needed for your many language resources)
+# Install required tools and packages
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends icu-devtools && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends icu-devtools tree && \
+    rm -rf /var/lib/apt/lists/* && \
+    dotnet tool install --global dotnet-ef
 
-# Copy from build stage
-COPY --from=build /app/publish .
+# Add dotnet tools to PATH
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+# Copy the source and published files
+COPY --from=build /source /app/src
+COPY --from=build /app/publish /app/publish
 
 # Environment configuration
-ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_ENVIRONMENT=Development
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+WORKDIR /app/src
+
+# Add a script to help with migrations
+RUN echo '#!/bin/bash\ncd /app/src/DemoBack && dotnet ef database update --project ../FlowCycle.Persistance/FlowCycle.Persistance.csproj --startup-project ./FlowCycle.Api.csproj' > /usr/local/bin/apply-migrations && \
+    chmod +x /usr/local/bin/apply-migrations
 
 # Expose ports
 EXPOSE 80
-EXPOSE 443
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s \
-    CMD curl -f http://localhost/health || exit 1
-
-ENTRYPOINT ["dotnet", "FlowCycle.Api.dll"]
+# Change the entrypoint to run from the publish directory
+CMD ["dotnet", "/app/publish/FlowCycle.Api.dll"]

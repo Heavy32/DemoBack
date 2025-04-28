@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlowCycle.Persistance.Migrations
 {
     /// <inheritdoc />
-    public partial class FullStorageCreation : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,7 +67,8 @@ namespace FlowCycle.Persistance.Migrations
                     TotalPrice = table.Column<double>(type: "double precision", nullable: false),
                     ReceiptDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, comment: "Дата поступления"),
                     SupplierId = table.Column<int>(type: "integer", nullable: false),
-                    ProjectId = table.Column<int>(type: "integer", nullable: false)
+                    ProjectId = table.Column<int>(type: "integer", nullable: false),
+                    IsArchived = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
