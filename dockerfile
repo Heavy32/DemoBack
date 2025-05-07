@@ -23,7 +23,7 @@ WORKDIR /app
 
 # Install required tools and packages
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends icu-devtools tree && \
+    apt-get install -y --no-install-recommends icu-devtools && \
     rm -rf /var/lib/apt/lists/* && \
     dotnet tool install --global dotnet-ef
 
@@ -38,14 +38,5 @@ COPY --from=build /app/publish /app/publish
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-WORKDIR /app/src
-
-# Add a script to help with migrations
-RUN echo '#!/bin/bash\ncd /app/src/DemoBack && dotnet ef database update --project ../FlowCycle.Persistance/FlowCycle.Persistance.csproj --startup-project ./FlowCycle.Api.csproj' > /usr/local/bin/apply-migrations && \
-    chmod +x /usr/local/bin/apply-migrations
-
 # Expose ports
 EXPOSE 80
-
-# Change the entrypoint to run from the publish directory
-CMD ["dotnet", "/app/publish/FlowCycle.Api.dll"]

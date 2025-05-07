@@ -15,6 +15,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        sleep 5 &&
+        echo 'Running migrations...' &&
+        cd /app/src/DemoBack &&
+        dotnet ef database update --project ../FlowCycle.Persistance/FlowCycle.Persistance.csproj --startup-project ./FlowCycle.Api.csproj &&
+        echo 'Starting application...' &&
+        dotnet /app/publish/FlowCycle.Api.dll
+      "
     restart: unless-stopped
     networks:
       - backend-network
