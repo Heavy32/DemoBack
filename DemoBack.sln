@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCycle.Persistance", "Fl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCycle.Domain", "FlowCycle.Domain\FlowCycle.Domain.csproj", "{277DA846-1D81-4E3A-866C-84A2FFA80FAB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCycle.Tests", "FlowCycle.Tests\FlowCycle.Tests.csproj", "{47BD2DD3-60BE-49D1-9775-BC12DA15F641}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{277DA846-1D81-4E3A-866C-84A2FFA80FAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{277DA846-1D81-4E3A-866C-84A2FFA80FAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{277DA846-1D81-4E3A-866C-84A2FFA80FAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47BD2DD3-60BE-49D1-9775-BC12DA15F641}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47BD2DD3-60BE-49D1-9775-BC12DA15F641}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47BD2DD3-60BE-49D1-9775-BC12DA15F641}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47BD2DD3-60BE-49D1-9775-BC12DA15F641}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

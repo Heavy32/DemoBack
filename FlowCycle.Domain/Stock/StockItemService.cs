@@ -1,68 +1,54 @@
 ﻿using AutoMapper;
+using FlowCycle.Domain.Stock.Models;
 using FlowCycle.Domain.Storage;
-using FlowCycle.Persistance;
+using FlowCycle.Persistance.Repositories;
+using FlowCycle.Persistance.Repositories.Models;
 using FlowCycle.Persistance.Storage;
-using Microsoft.EntityFrameworkCore;
 
 namespace FlowCycle.Domain.Stock
 {
     public class StorageItemService : IStorageItemService
     {
-        private readonly AppDbContext context;
-        private readonly IMapper mapper;
+        private readonly IStockItemRepository _repository;
+        private readonly IMapper _mapper;
 
-        public StorageItemService(AppDbContext context, IMapper mapper)
+        public StorageItemService(IStockItemRepository repository, IMapper mapper)
         {
-            this.context = context;
-            this.mapper = mapper;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         public async Task<StockItem> GetById(int id, CancellationToken ct)
         {
-            var dbResult = await context.Stocks.FirstOrDefaultAsync(stock => stock.Id == id);
-
-            var result = mapper.Map<StockItem>(dbResult);
-
-            return result;
+            var dao = await _repository.GetByIdAsync(id, ct);
+            return _mapper.Map<StockItem>(dao);
         }
 
-        public async Task<IEnumerable<StockItem>> GetList(CancellationToken ct)
+        public async Task<IEnumerable<StockItem>> GetList(StockItemFilter? filter = null, CancellationToken ct = default)
         {
-            var dbResult = await context.Stocks.ToListAsync(ct);
-
-            var result = dbResult.Select(mapper.Map<StockItem>);
-
-            return result;
+            var repositoryFilter = filter != null ? _mapper.Map<StockItemFilterDao>(filter) : null;
+            var daos = await _repository.GetListAsync(repositoryFilter, ct);
+            return daos.Select(_mapper.Map<StockItem>);
         }
 
         public async Task<StockItem> Create(StockItem stockItem, CancellationToken ct)
         {
-            var newItem = mapper.Map<StockItemDao>(stockItem);
-
-            context.Stocks.Add(newItem);
-
-            await context.SaveChangesAsync(ct);
-
-            return mapper.Map<StockItem>(newItem);
+            var dao = _mapper.Map<StockItemDao>(stockItem);
+            var createdDao = await _repository.CreateAsync(dao, ct);
+            return _mapper.Map<StockItem>(createdDao);
         }
 
         public async Task<StockItem> Update(StockItem stockItem, int id, CancellationToken ct)
         {
-            var updatedItem = mapper.Map<StockItemDao>(stockItem);
-
-            context.Stocks.Update(updatedItem);
-
-            await context.SaveChangesAsync(ct);
-
-            return mapper.Map<StockItem>(updatedItem);
+            var dao = _mapper.Map<StockItemDao>(stockItem);
+            var updatedDao = await _repository.UpdateAsync(dao, ct);
+            return _mapper.Map<StockItem>(updatedDao);
         }
 
         public async Task Delete(StockItem stockItem, CancellationToken ct)
         {
-            var deletedItem = mapper.Map<StockItemDao>(stockItem);
-            context.Stocks.Remove(deletedItem);
-
-            await context.SaveChangesAsync(ct);
+            var dao = _mapper.Map<StockItemDao>(stockItem);
+            await _repository.DeleteAsync(dao, ct);
         }
     }
 }

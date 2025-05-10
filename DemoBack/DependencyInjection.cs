@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FlowCycle.Api.Models.Storage.MapProfiles;
 using FlowCycle.Persistance;
+using FlowCycle.Persistance.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +22,8 @@ namespace FlowCycle.Api
             {
                 options.UseNpgsql(configuration["ConnectionStrings:Base"]);
             });
+
+            services.AddScoped<IStockItemRepository, StockItemRepository>();
 
             return services;
         }

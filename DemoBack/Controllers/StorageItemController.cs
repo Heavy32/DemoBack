@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FlowCycle.Api.Storage;
 using FlowCycle.Domain.Stock;
+using FlowCycle.Domain.Stock.Models;
 using FlowCycle.Domain.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -47,16 +48,26 @@ namespace FlowCycle.Api.Controllers
         }
 
         /// <summary>
-        /// Get all storage items
+        /// Get a list of storage items with optional filtering and sorting
         /// </summary>
+        /// <param name="filter">Optional filter and sort parameters</param>
         /// <param name="ct">Cancellation token</param>
-        /// <returns>List of all storage items</returns>
+        /// <returns>List of storage items</returns>
         [HttpGet]
-        [SwaggerOperation(OperationId = "GetAllStorageItems")]
-        [SwaggerResponse(200, "Returns all storage items", typeof(IEnumerable<StockItemDto>))]
-        public async Task<IActionResult> GetList(CancellationToken ct)
+        [SwaggerOperation(OperationId = "GetStorageItems")]
+        [SwaggerResponse(200, "Returns the list of storage items", typeof(IEnumerable<StockItemDto>))]
+        [SwaggerResponse(400, "Invalid filter parameters")]
+        public async Task<IActionResult> GetList(
+            [FromQuery] StockItemFilterDto? filter = null,
+            CancellationToken ct = default)
         {
-            var result = await _storageItemService.GetList(ct);
+            if (filter != null && !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var domainFilter = filter != null ? _mapper.Map<StockItemFilter>(filter) : null;
+            var result = await _storageItemService.GetList(domainFilter, ct);
             var dto = result.Select(_mapper.Map<StockItemDto>);
             return Ok(dto);
         }
@@ -130,6 +141,35 @@ namespace FlowCycle.Api.Controllers
 
             await _storageItemService.Delete(stockItem, ct);
             return NoContent();
+        }
+
+        /// <summary>
+        /// Archive or unarchive a storage item
+        /// </summary>
+        /// <param name="id">ID of the storage item</param>
+        /// <param name="isArchived">Whether to archive (true) or unarchive (false) the item</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>The updated storage item</returns>
+        [HttpPatch("{id}/archive")]
+        [SwaggerOperation(OperationId = "ArchiveStorageItem")]
+        [SwaggerResponse(200, "Storage item archive status updated", typeof(StockItemDto))]
+        [SwaggerResponse(404, "Storage item not found")]
+        public async Task<IActionResult> Archive(
+            int id,
+            [FromQuery] bool isArchived = true,
+            CancellationToken ct = default)
+        {
+            var existingItem = await _storageItemService.GetById(id, ct);
+            if (existingItem == null)
+            {
+                return NotFound();
+            }
+
+            existingItem.IsArchived = isArchived;
+            var result = await _storageItemService.Update(existingItem, id, ct);
+
+            var dto = _mapper.Map<StockItemDto>(result);
+            return Ok(dto);
         }
     }
 }

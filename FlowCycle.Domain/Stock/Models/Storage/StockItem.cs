@@ -16,5 +16,6 @@ namespace FlowCycle.Domain.Storage
         public DateTime ReceiptDate { get; set; }
         public Supplier Supplier { get; set; }
         public Project Project { get; set; }
+        public bool IsArchived { get; set; }
     }
 }

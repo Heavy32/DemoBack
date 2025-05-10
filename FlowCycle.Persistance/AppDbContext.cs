@@ -18,6 +18,12 @@ namespace FlowCycle.Persistance
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<StockItemDao>(entity =>
+            {
+                entity.Property(e => e.VAT).HasComment("НДС");
+                entity.Property(e => e.ReceiptDate).HasComment("Дата поступления");
+            });
         }
     }
 }
