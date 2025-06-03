@@ -34,7 +34,7 @@ namespace FlowCycle.Api.Controllers
         [SwaggerResponse(200, "Stock items imported successfully", typeof(IEnumerable<StockItemDto>))]
         [SwaggerResponse(400, "Invalid file format or content")]
         public async Task<IActionResult> ImportFromExcel(
-            [FromForm] IFormFile file,
+            IFormFile file,
             CancellationToken ct = default)
         {
             if (file == null || file.Length == 0)
@@ -54,4 +54,4 @@ namespace FlowCycle.Api.Controllers
             return Ok(dtos);
         }
     }
-} 
+}

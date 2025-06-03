@@ -3,7 +3,7 @@ version: '3.8'
 services:
   webapi:
     container_name: flowcycle-api
-    image: demoback-webapi
+    image: flowcycle-api
     ports:
       - "8080:80"
     environment:
