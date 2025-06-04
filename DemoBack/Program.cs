@@ -1,8 +1,11 @@
 using FlowCycle.Persistance;
-using Microsoft.AspNetCore.Diagnostics;
+using FlowCycle.Domain.Stock;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using FlowCycle.Api;
+using Microsoft.AspNetCore.Diagnostics;
+using System.Reflection;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.AspNetCore.Http;
 
 internal class Program
 {
@@ -13,10 +16,17 @@ internal class Program
         // Add services to the container
         builder.Services.AddControllers(); // For API controllers only
 
-        // Register infrastructure and business services
-        builder.Services.AddInfrustructureLayer(builder.Configuration);
-        builder.Services.AddBusinessServiceLayer();
-        builder.Services.AddAutoMapperProfiles();
+        // Add DbContext
+        builder.Services.AddDbContext<AppDbContext>(options =>
+        {
+            var connectionString = builder.Configuration["ConnectionStrings:Base"];
+            Console.WriteLine($"Using connection string: {connectionString}");
+            options.UseNpgsql(connectionString);
+        });
+
+        // Register services
+        builder.Services.AddScoped<IStockItemImportService, StockItemImportService>();
+        builder.Services.AddScoped<IStockItemExportService, StockItemExportService>();
 
         // Configure Swagger
         builder.Services.AddEndpointsApiExplorer();
@@ -28,6 +38,19 @@ internal class Program
                 Version = "v1",
                 Description = "API for managing storage items"
             });
+
+            // Configure file upload support
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "JWT Authorization header using the Bearer scheme",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+
+            // Add support for file uploads
+            //c.OperationFilter<FileUploadOperationFilter>();
 
             // Ensure all controllers are discovered
             c.DocInclusionPredicate((docName, apiDesc) => true);
@@ -45,12 +68,18 @@ internal class Program
         app.UseRouting();
         app.UseAuthorization();
 
-        // Enable Swagger
-        app.UseSwagger();
+        // Enable Swagger with detailed error handling
+        app.UseSwagger(c =>
+        {
+            c.SerializeAsV2 = false;
+        });
+
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "FlowCycle API v1");
             c.RoutePrefix = string.Empty; // Make Swagger UI the root page
+            c.EnableDeepLinking();
+            c.DisplayRequestDuration();
         });
 
         // Add global exception handling
