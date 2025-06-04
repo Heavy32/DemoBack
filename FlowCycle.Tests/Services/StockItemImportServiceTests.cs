@@ -31,9 +31,10 @@ namespace FlowCycle.Tests.Services
 
             var mapperConfig = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<SupplierDao, Supplier>();
-                cfg.CreateMap<CategoryDao, Category>();
-                cfg.CreateMap<ProjectDao, Project>();
+                cfg.CreateMap<SupplierDao, Supplier>().ReverseMap();
+                cfg.CreateMap<CategoryDao, Category>().ReverseMap();
+                cfg.CreateMap<ProjectDao, Project>().ReverseMap();
+                cfg.CreateMap<StockItemDao, StockItem>().ReverseMap();
             });
             _mapper = mapperConfig.CreateMapper();
 

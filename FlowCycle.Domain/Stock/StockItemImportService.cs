@@ -33,15 +33,15 @@ namespace FlowCycle.Domain.Stock
         {
             using var workbook = new XLWorkbook(fileStream);
             var worksheet = workbook.Worksheet(1); // First worksheet
-            var rows = worksheet.RowsUsed().Skip(1); // Skip header row
+            var rows = worksheet.RowsUsed().Skip(2); // Skip header row
 
-            var stockItems = new List<StockItem>();
+            var stockItems = new List<StockItemDao>();
 
             foreach (var row in rows)
             {
-                var supplierName = row.Cell(6).GetString();
-                var categoryName = row.Cell(7).GetString();
-                var projectName = row.Cell(8).GetString();
+                var supplierName = row.Cell(12).GetString();
+                var categoryName = row.Cell(4).GetString();
+                var projectName = row.Cell(13).GetString();
 
                 // Find or validate inner entities
                 var supplierDao = await _supplierRepository.GetByNameAsync(supplierName, ct);
@@ -62,23 +62,25 @@ namespace FlowCycle.Domain.Stock
                     throw new EntityNotFoundException("Project", projectName);
                 }
 
-                var supplier = _mapper.Map<Supplier>(supplierDao);
-                var category = _mapper.Map<Category>(categoryDao);
-                var project = _mapper.Map<Project>(projectDao);
+                var rawDate = row.Cell(11).GetValue<DateTime>();
+                var receiptDate = rawDate.Kind == DateTimeKind.Utc
+                    ? rawDate
+                    : DateTime.SpecifyKind(rawDate, DateTimeKind.Utc);
 
-                var stockItem = new StockItem
+                var stockItem = new StockItemDao
                 {
-                    Name = row.Cell(1).GetString(),
-                    Code = row.Cell(2).GetString(),
-                    Amount = row.Cell(3).GetValue<int>(),
-                    SinglePrice = row.Cell(4).GetValue<double>(),
-                    Measure = row.Cell(5).GetString(),
-                    Supplier = supplier,
-                    Category = category,
-                    Project = project,
-                    ReceiptDate = row.Cell(9).GetValue<DateTime>(),
-                    VAT = row.Cell(10).GetValue<double>(),
-                    IsArchived = false
+                    Name = row.Cell(3).GetString(),
+                    Code = row.Cell(5).GetString(),
+                    Amount = row.Cell(7).GetValue<int>(),
+                    SinglePrice = row.Cell(8).GetValue<double>(),
+                    Measure = row.Cell(6).GetString(),
+                    Supplier = supplierDao,
+                    Category = categoryDao,
+                    Project = projectDao,
+                    ReceiptDate = receiptDate,
+                    VAT = row.Cell(9).GetValue<double>(),
+                    IsArchived = false,
+                    TotalPrice = row.Cell(10).GetValue<double>(),
                 };
 
                 stockItems.Add(stockItem);
@@ -87,11 +89,28 @@ namespace FlowCycle.Domain.Stock
             // Save all items to the database
             foreach (var item in stockItems)
             {
-                var dao = _mapper.Map<StockItemDao>(item);
+                var safeReceiptDate = item.ReceiptDate.Kind == DateTimeKind.Utc
+                    ? item.ReceiptDate
+                    : DateTime.SpecifyKind(item.ReceiptDate, DateTimeKind.Utc);
+                var dao = new StockItemDao
+                {
+                    Name = item.Name,
+                    Code = item.Code,
+                    Amount = item.Amount,
+                    SinglePrice = item.SinglePrice,
+                    Measure = item.Measure,
+                    Supplier = item.Supplier,
+                    Category = item.Category,
+                    Project = item.Project,
+                    ReceiptDate = safeReceiptDate,
+                    VAT = item.VAT,
+                    IsArchived = item.IsArchived,
+                    TotalPrice = item.TotalPrice,
+                };
                 await _repository.CreateAsync(dao, ct);
             }
 
-            return stockItems;
+            return stockItems.Select(_mapper.Map<StockItem>);
         }
     }
 } 

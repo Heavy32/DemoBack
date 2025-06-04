@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
- 
+using FlowCycle.Domain.Stock;
+
 namespace FlowCycle.Api
 {
     public static class DependencyInjection
@@ -23,8 +24,20 @@ namespace FlowCycle.Api
                 options.UseNpgsql(configuration["ConnectionStrings:Base"]);
             });
 
+            // Repository registrations
             services.AddScoped<IStockItemRepository, StockItemRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ISupplierRepository, SupplierRepository>();
+            services.AddScoped<IProjectRepository, ProjectRepository>();
 
+            return services;
+        }
+
+        // Register all business/service layer classes (ending with Service)
+        public static IServiceCollection AddBusinessServiceLayer(this IServiceCollection services)
+        {
+            services.AddScoped<IStorageItemService, StorageItemService>();
+            services.AddScoped<IStockItemImportService, StockItemImportService>();
             return services;
         }
 

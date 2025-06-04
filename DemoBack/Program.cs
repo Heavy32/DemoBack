@@ -2,6 +2,7 @@ using FlowCycle.Persistance;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using FlowCycle.Api;
 
 internal class Program
 {
@@ -12,11 +13,10 @@ internal class Program
         // Add services to the container
         builder.Services.AddControllers(); // For API controllers only
 
-        // Add DbContext
-        builder.Services.AddDbContext<AppDbContext>(options =>
-        {
-            options.UseNpgsql(builder.Configuration["ConnectionStrings:Base"]);
-        });
+        // Register infrastructure and business services
+        builder.Services.AddInfrustructureLayer(builder.Configuration);
+        builder.Services.AddBusinessServiceLayer();
+        builder.Services.AddAutoMapperProfiles();
 
         // Configure Swagger
         builder.Services.AddEndpointsApiExplorer();
