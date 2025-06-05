@@ -38,6 +38,7 @@ namespace FlowCycle.Api
         {
             services.AddScoped<IStorageItemService, StorageItemService>();
             services.AddScoped<IStockItemImportService, StockItemImportService>();
+            services.AddScoped<IStockItemExportService, StockItemExportService>();
             return services;
         }
 

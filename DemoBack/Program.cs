@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using System.Reflection;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Http;
+using FlowCycle.Api;
 
 internal class Program
 {
@@ -25,8 +26,9 @@ internal class Program
         });
 
         // Register services
-        builder.Services.AddScoped<IStockItemImportService, StockItemImportService>();
-        builder.Services.AddScoped<IStockItemExportService, StockItemExportService>();
+        builder.Services.AddBusinessServiceLayer();
+        builder.Services.AddInfrustructureLayer(builder.Configuration);
+        builder.Services.AddAutoMapperProfiles();
 
         // Configure Swagger
         builder.Services.AddEndpointsApiExplorer();
