@@ -7,6 +7,8 @@ using System.Reflection;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Http;
 using FlowCycle.Api;
+using FlowCycle.Domain.Storage;
+using FlowCycle.Persistance.Repositories;
 
 internal class Program
 {

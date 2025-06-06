@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using FlowCycle.Domain.Stock;
+using FlowCycle.Domain.Costing;
+using FlowCycle.Persistance.Repositories.Models;
 
 namespace FlowCycle.Api
 {
@@ -30,6 +32,11 @@ namespace FlowCycle.Api
             services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
 
+            // Costing repositories
+            services.AddScoped<ICostingMaterialRepository, CostingMaterialRepository>();
+            services.AddScoped<ICostingLaborRepository, CostingLaborRepository>();
+            services.AddScoped<ICostingOverheadRepository, CostingOverheadRepository>();
+
             return services;
         }
 
@@ -39,6 +46,12 @@ namespace FlowCycle.Api
             services.AddScoped<IStorageItemService, StorageItemService>();
             services.AddScoped<IStockItemImportService, StockItemImportService>();
             services.AddScoped<IStockItemExportService, StockItemExportService>();
+
+            // Costing services
+            services.AddScoped<ICostingMaterialService, CostingMaterialService>();
+            services.AddScoped<ICostingLaborService, CostingLaborService>();
+            services.AddScoped<ICostingOverheadService, CostingOverheadService>();
+
             return services;
         }
 

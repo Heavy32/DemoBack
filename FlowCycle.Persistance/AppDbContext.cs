@@ -1,4 +1,5 @@
-﻿using FlowCycle.Persistance.Storage;
+﻿using FlowCycle.Persistance.Repositories.Models;
+using FlowCycle.Persistance.Storage;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.IO;
@@ -18,6 +19,10 @@ namespace FlowCycle.Persistance
         public DbSet<ProjectDao> Projects { get; set; }
         public DbSet<CategoryDao> Categories { get; set; }
         public DbSet<SupplierDao> Suppliers { get; set; }
+        public DbSet<CostingDao> Costings { get; set; } = null!;
+        public DbSet<CostingMaterialDao> CostingMaterials { get; set; }
+        public DbSet<CostingLaborDao> CostingLabors { get; set; }
+        public DbSet<CostingOverheadDao> CostingOverheads { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
