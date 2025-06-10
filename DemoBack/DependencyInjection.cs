@@ -34,6 +34,7 @@ namespace FlowCycle.Api
 
             // Costing repositories
             services.AddScoped<ICostingMaterialRepository, CostingMaterialRepository>();
+            services.AddScoped<ICostingRepository, CostingRepository>();
             services.AddScoped<ICostingLaborRepository, CostingLaborRepository>();
             services.AddScoped<ICostingOverheadRepository, CostingOverheadRepository>();
 
@@ -49,6 +50,7 @@ namespace FlowCycle.Api
 
             // Costing services
             services.AddScoped<ICostingMaterialService, CostingMaterialService>();
+            services.AddScoped<ICostingService, CostingService>();
             services.AddScoped<ICostingLaborService, CostingLaborService>();
             services.AddScoped<ICostingOverheadService, CostingOverheadService>();
 

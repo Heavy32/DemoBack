@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FlowCycle.Persistance.Storage;
 
 namespace FlowCycle.Persistance.Repositories.Models
 {
@@ -18,8 +19,10 @@ namespace FlowCycle.Persistance.Repositories.Models
         public string ProductCode { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(50)]
-        public string CostingType { get; set; } = string.Empty;
+        public int CostingTypeId { get; set; }
+
+        [ForeignKey(nameof(CostingTypeId))]
+        public CostingTypeDao CostingType { get; set; } = null!;
 
         [Required]
         [MaxLength(20)]
@@ -35,8 +38,10 @@ namespace FlowCycle.Persistance.Repositories.Models
         public decimal TotalCost { get; set; }
 
         [Required]
-        [MaxLength(100)]
-        public string ProjectName { get; set; } = string.Empty;
+        public int ProjectId { get; set; }
+
+        [ForeignKey(nameof(ProjectId))]
+        public ProjectDao Project { get; set; } = null!;
 
         [Required]
         public DateTime CreatedAt { get; set; }

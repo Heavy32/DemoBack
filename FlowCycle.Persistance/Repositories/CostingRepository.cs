@@ -15,13 +15,18 @@ namespace FlowCycle.Persistance.Repositories
         public async Task<CostingDao> GetByIdAsync(int id, CancellationToken ct)
         {
             return await _dbContext.Costings
+                .Include(x => x.Project)
+                .Include(x => x.CostingType)
                 .FirstOrDefaultAsync(x => x.Id == id, ct)
                 ?? throw new KeyNotFoundException($"Costing with ID {id} not found");
         }
 
         public async Task<IEnumerable<CostingDao>> GetListAsync(CostingFilterDao? filter = null, CancellationToken ct = default)
         {
-            var query = _dbContext.Costings.AsQueryable();
+            var query = _dbContext.Costings
+                .Include(x => x.Project)
+                .Include(x => x.CostingType)
+                .AsQueryable();
 
             if (filter != null)
             {
@@ -31,11 +36,11 @@ namespace FlowCycle.Persistance.Repositories
                 if (!string.IsNullOrWhiteSpace(filter.ProductCode))
                     query = query.Where(x => x.ProductCode.Contains(filter.ProductCode));
 
-                if (!string.IsNullOrWhiteSpace(filter.CostingType))
-                    query = query.Where(x => x.CostingType == filter.CostingType);
+                if (filter.CostingTypeId.HasValue)
+                    query = query.Where(x => x.CostingTypeId == filter.CostingTypeId.Value);
 
-                if (!string.IsNullOrWhiteSpace(filter.ProjectName))
-                    query = query.Where(x => x.ProjectName.Contains(filter.ProjectName));
+                if (filter.ProjectId.HasValue)
+                    query = query.Where(x => x.ProjectId == filter.ProjectId.Value);
 
                 if (!string.IsNullOrWhiteSpace(filter.SortColumn))
                 {
@@ -47,9 +52,9 @@ namespace FlowCycle.Persistance.Repositories
                         "productcode" => filter.SortDescending
                             ? query.OrderByDescending(x => x.ProductCode)
                             : query.OrderBy(x => x.ProductCode),
-                        "costingtype" => filter.SortDescending
-                            ? query.OrderByDescending(x => x.CostingType)
-                            : query.OrderBy(x => x.CostingType),
+                        "costingtypeid" => filter.SortDescending
+                            ? query.OrderByDescending(x => x.CostingTypeId)
+                            : query.OrderBy(x => x.CostingTypeId),
                         "uom" => filter.SortDescending
                             ? query.OrderByDescending(x => x.Uom)
                             : query.OrderBy(x => x.Uom),
@@ -62,9 +67,9 @@ namespace FlowCycle.Persistance.Repositories
                         "totalcost" => filter.SortDescending
                             ? query.OrderByDescending(x => x.TotalCost)
                             : query.OrderBy(x => x.TotalCost),
-                        "projectname" => filter.SortDescending
-                            ? query.OrderByDescending(x => x.ProjectName)
-                            : query.OrderBy(x => x.ProjectName),
+                        "projectid" => filter.SortDescending
+                            ? query.OrderByDescending(x => x.ProjectId)
+                            : query.OrderBy(x => x.ProjectId),
                         "createdat" => filter.SortDescending
                             ? query.OrderByDescending(x => x.CreatedAt)
                             : query.OrderBy(x => x.CreatedAt),
@@ -93,8 +98,9 @@ namespace FlowCycle.Persistance.Repositories
             return costing;
         }
 
-        public async Task DeleteAsync(CostingDao costing, CancellationToken ct)
+        public async Task DeleteAsync(int id, CancellationToken ct)
         {
+            var costing = await GetByIdAsync(id, ct);
             _dbContext.Costings.Remove(costing);
             await _dbContext.SaveChangesAsync(ct);
         }

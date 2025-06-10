@@ -9,6 +9,6 @@ namespace FlowCycle.Persistance.Repositories
         Task<IEnumerable<CostingDao>> GetListAsync(CostingFilterDao? filter = null, CancellationToken ct = default);
         Task<CostingDao> CreateAsync(CostingDao costing, CancellationToken ct);
         Task<CostingDao> UpdateAsync(CostingDao costing, CancellationToken ct);
-        Task DeleteAsync(CostingDao costing, CancellationToken ct);
+        Task DeleteAsync(int id, CancellationToken ct);
     }
 }

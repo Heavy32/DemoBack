@@ -5,45 +5,61 @@ namespace FlowCycle.Persistance.Repositories
 {
     public class CostingMaterialRepository : ICostingMaterialRepository
     {
-        private readonly AppDbContext _dbContext;
+        private readonly AppDbContext _context;
 
-        public CostingMaterialRepository(AppDbContext dbContext)
+        public CostingMaterialRepository(AppDbContext context)
         {
-            _dbContext = dbContext;
+            _context = context;
+        }
+
+        public async Task<IEnumerable<CostingMaterialDao>> GetAllAsync()
+        {
+            return await _context.CostingMaterials
+                .Include(m => m.Costing)
+                .Include(m => m.Material)
+                .ToListAsync();
         }
 
         public async Task<CostingMaterialDao> GetByIdAsync(int id, CancellationToken ct)
         {
-            return await _dbContext.CostingMaterials
-                .FirstOrDefaultAsync(x => x.Id == id, ct)
+            return await _context.CostingMaterials
+                .Include(m => m.Costing)
+                .Include(m => m.Material)
+                .FirstOrDefaultAsync(m => m.Id == id, ct)
                 ?? throw new KeyNotFoundException($"CostingMaterial with ID {id} not found");
+        }
+
+        public async Task<IEnumerable<CostingMaterialDao>> GetByCostingIdAsync(int costingId)
+        {
+            return await _context.CostingMaterials
+                .Include(m => m.Costing)
+                .Include(m => m.Material)
+                .Where(m => m.CostingId == costingId)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<CostingMaterialDao>> GetListAsync(CostingMaterialFilterDao? filter = null, CancellationToken ct = default)
         {
-            var query = _dbContext.CostingMaterials.AsQueryable();
+            var query = _context.CostingMaterials
+                .Include(m => m.Costing)
+                .Include(m => m.Material)
+                .AsQueryable();
 
             if (filter != null)
             {
                 if (filter.CostingId.HasValue)
                     query = query.Where(x => x.CostingId == filter.CostingId.Value);
 
-                if (!string.IsNullOrWhiteSpace(filter.MaterialName))
-                    query = query.Where(x => x.MaterialName.Contains(filter.MaterialName));
-
-                if (!string.IsNullOrWhiteSpace(filter.MaterialCode))
-                    query = query.Where(x => x.MaterialCode.Contains(filter.MaterialCode));
+                if (filter.MaterialId.HasValue)
+                    query = query.Where(x => x.MaterialId == filter.MaterialId.Value);
 
                 if (!string.IsNullOrWhiteSpace(filter.SortColumn))
                 {
                     query = filter.SortColumn.ToLower() switch
                     {
-                        "materialname" => filter.SortDescending
-                            ? query.OrderByDescending(x => x.MaterialName)
-                            : query.OrderBy(x => x.MaterialName),
-                        "materialcode" => filter.SortDescending
-                            ? query.OrderByDescending(x => x.MaterialCode)
-                            : query.OrderBy(x => x.MaterialCode),
+                        "materialid" => filter.SortDescending
+                            ? query.OrderByDescending(x => x.MaterialId)
+                            : query.OrderBy(x => x.MaterialId),
                         "uom" => filter.SortDescending
                             ? query.OrderByDescending(x => x.Uom)
                             : query.OrderBy(x => x.Uom),
@@ -69,22 +85,23 @@ namespace FlowCycle.Persistance.Repositories
 
         public async Task<CostingMaterialDao> CreateAsync(CostingMaterialDao costingMaterial, CancellationToken ct)
         {
-            _dbContext.CostingMaterials.Add(costingMaterial);
-            await _dbContext.SaveChangesAsync(ct);
+            _context.CostingMaterials.Add(costingMaterial);
+            await _context.SaveChangesAsync(ct);
             return costingMaterial;
         }
 
         public async Task<CostingMaterialDao> UpdateAsync(CostingMaterialDao costingMaterial, CancellationToken ct)
         {
-            _dbContext.CostingMaterials.Update(costingMaterial);
-            await _dbContext.SaveChangesAsync(ct);
+            _context.CostingMaterials.Update(costingMaterial);
+            await _context.SaveChangesAsync(ct);
             return costingMaterial;
         }
 
-        public async Task DeleteAsync(CostingMaterialDao costingMaterial, CancellationToken ct)
+        public async Task DeleteAsync(int id, CancellationToken ct)
         {
-            _dbContext.CostingMaterials.Remove(costingMaterial);
-            await _dbContext.SaveChangesAsync(ct);
+            var costingMaterial = await GetByIdAsync(id, ct);
+            _context.CostingMaterials.Remove(costingMaterial);
+            await _context.SaveChangesAsync(ct);
         }
     }
 }

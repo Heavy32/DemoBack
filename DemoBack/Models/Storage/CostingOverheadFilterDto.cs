@@ -1,19 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FlowCycle.Api.Models.Storage
+namespace DemoBack.Models.Storage
 {
     public class CostingOverheadFilterDto
     {
         public int? CostingId { get; set; }
+        public int? OverheadTypeId { get; set; }
 
-        public string? OverheadName { get; set; }
-
-        public string? OverheadType { get; set; }
-
-        [RegularExpression(@"^(overheadName|overheadType|costValue|note)$",
-            ErrorMessage = "Invalid sort column. Valid values are: overheadName, overheadType, costValue, note")]
+        [RegularExpression(@"^(overheadTypeId|uom|unitPrice|qtyPerProduct|totalValue|note)$",
+            ErrorMessage = "Invalid sort column. Valid values are: overheadTypeId, uom, unitPrice, qtyPerProduct, totalValue, note")]
         public string? SortColumn { get; set; }
-
         public bool SortDescending { get; set; }
     }
 }

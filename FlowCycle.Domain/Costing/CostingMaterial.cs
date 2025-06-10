@@ -15,12 +15,10 @@ namespace FlowCycle.Domain.Costing
         public CostingModel Costing { get; set; } = null!;
 
         [Required]
-        [MaxLength(255)]
-        public string MaterialName { get; set; } = null!;
+        public int MaterialId { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string MaterialCode { get; set; } = null!;
+        [ForeignKey(nameof(MaterialId))]
+        public Material Material { get; set; } = null!;
 
         [Required]
         [MaxLength(50)]

@@ -8,13 +8,7 @@ namespace DemoBack.Models.Storage
 
         public int CostingId { get; set; }
 
-        [Required]
-        [MaxLength(255)]
-        public string MaterialName { get; set; } = null!;
-
-        [Required]
-        [MaxLength(50)]
-        public string MaterialCode { get; set; } = null!;
+        public MaterialDto Material { get; set; }
 
         [Required]
         [MaxLength(50)]

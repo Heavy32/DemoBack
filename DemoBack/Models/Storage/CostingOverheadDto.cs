@@ -1,3 +1,4 @@
+using DemoBack.Models.Storage;
 using System.ComponentModel.DataAnnotations;
 
 namespace FlowCycle.Api.Models.Storage
@@ -12,9 +13,7 @@ namespace FlowCycle.Api.Models.Storage
         [MaxLength(255)]
         public string OverheadName { get; set; } = null!;
 
-        [Required]
-        [MaxLength(50)]
-        public string OverheadType { get; set; } = null!;
+        public OverheadTypeDto OverheadType { get; set; } = null!;
 
         [Required]
         public decimal CostValue { get; set; }

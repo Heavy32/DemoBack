@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlowCycle.Persistance.Repositories.Models
 {
+    [Table("CostingOverheads")]
     public class CostingOverheadDao
     {
         [Key]
@@ -11,22 +12,32 @@ namespace FlowCycle.Persistance.Repositories.Models
         [Required]
         public int CostingId { get; set; }
 
-        [ForeignKey(nameof(CostingId))]
-        public CostingDao Costing { get; set; } = null!;
-
         [Required]
-        [MaxLength(255)]
-        public string OverheadName { get; set; } = null!;
+        public int OverheadTypeId { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string OverheadType { get; set; } = null!;
+        public string Uom { get; set; } = null!;
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]
-        public decimal CostValue { get; set; }
+        public decimal UnitPrice { get; set; }
 
-        [MaxLength(500)]
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal QtyPerProduct { get; set; }
+
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal TotalValue { get; set; }
+
+        [MaxLength(255)]
         public string? Note { get; set; }
+
+        [ForeignKey(nameof(CostingId))]
+        public CostingDao Costing { get; set; } = null!;
+
+        [ForeignKey(nameof(OverheadTypeId))]
+        public OverheadTypeDao OverheadType { get; set; } = null!;
     }
 }

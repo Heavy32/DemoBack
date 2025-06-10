@@ -45,8 +45,7 @@ namespace FlowCycle.Domain.Costing
 
         public async Task DeleteAsync(int id, CancellationToken ct)
         {
-            var costingMaterial = await _costingMaterialRepository.GetByIdAsync(id, ct);
-            await _costingMaterialRepository.DeleteAsync(costingMaterial, ct);
+            await _costingMaterialRepository.DeleteAsync(id, ct);
         }
     }
 }

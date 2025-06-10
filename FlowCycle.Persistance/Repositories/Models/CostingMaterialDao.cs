@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlowCycle.Persistance.Repositories.Models
 {
+    [Table("CostingMaterials")]
     public class CostingMaterialDao
     {
         [Key]
@@ -15,12 +16,10 @@ namespace FlowCycle.Persistance.Repositories.Models
         public CostingDao Costing { get; set; } = null!;
 
         [Required]
-        [MaxLength(255)]
-        public string MaterialName { get; set; } = null!;
+        public int MaterialId { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string MaterialCode { get; set; } = null!;
+        [ForeignKey(nameof(MaterialId))]
+        public MaterialDao Material { get; set; } = null!;
 
         [Required]
         [MaxLength(50)]

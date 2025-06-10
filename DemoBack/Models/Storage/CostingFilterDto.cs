@@ -18,20 +18,20 @@ namespace DemoBack.Models.Storage
         public string? ProductCode { get; set; }
 
         /// <summary>
-        /// Filter by costing type (case-insensitive contains)
+        /// Filter by costing type ID
         /// </summary>
-        public string? CostingType { get; set; }
+        public int? CostingTypeId { get; set; }
 
         /// <summary>
-        /// Filter by project name (case-insensitive contains)
+        /// Filter by project ID
         /// </summary>
-        public string? ProjectName { get; set; }
+        public int? ProjectId { get; set; }
 
         /// <summary>
-        /// Column to sort by. Available values: productName, productCode, costingType, uom, quantity, unitCost, totalCost, projectName, createdAt, updatedAt
+        /// Column to sort by. Available values: productName, productCode, costingTypeId, uom, quantity, unitCost, totalCost, projectId, createdAt, updatedAt
         /// </summary>
-        [RegularExpression("^(productName|productCode|costingType|uom|quantity|unitCost|totalCost|projectName|createdAt|updatedAt)$",
-            ErrorMessage = "Invalid sort column. Available values: productName, productCode, costingType, uom, quantity, unitCost, totalCost, projectName, createdAt, updatedAt")]
+        [RegularExpression("^(productName|productCode|costingTypeId|uom|quantity|unitCost|totalCost|projectId|createdAt|updatedAt)$",
+            ErrorMessage = "Invalid sort column. Available values: productName, productCode, costingTypeId, uom, quantity, unitCost, totalCost, projectId, createdAt, updatedAt")]
         public string? SortColumn { get; set; }
 
         /// <summary>

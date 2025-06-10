@@ -16,6 +16,7 @@ namespace FlowCycle.Persistance.Repositories
         {
             return await _context.CostingOverheads
                 .Include(o => o.Costing)
+                .Include(o => o.OverheadType)
                 .ToListAsync();
         }
 
@@ -23,6 +24,7 @@ namespace FlowCycle.Persistance.Repositories
         {
             return await _context.CostingOverheads
                 .Include(o => o.Costing)
+                .Include(o => o.OverheadType)
                 .FirstOrDefaultAsync(o => o.Id == id, ct)
                 ?? throw new KeyNotFoundException($"CostingOverhead with ID {id} not found");
         }
@@ -31,6 +33,7 @@ namespace FlowCycle.Persistance.Repositories
         {
             return await _context.CostingOverheads
                 .Include(o => o.Costing)
+                .Include(o => o.OverheadType)
                 .Where(o => o.CostingId == costingId)
                 .ToListAsync();
         }
@@ -39,6 +42,7 @@ namespace FlowCycle.Persistance.Repositories
         {
             var query = _context.CostingOverheads
                 .Include(o => o.Costing)
+                .Include(o => o.OverheadType)
                 .AsQueryable();
 
             if (filter != null)
@@ -46,25 +50,28 @@ namespace FlowCycle.Persistance.Repositories
                 if (filter.CostingId.HasValue)
                     query = query.Where(x => x.CostingId == filter.CostingId.Value);
 
-                if (!string.IsNullOrWhiteSpace(filter.OverheadName))
-                    query = query.Where(x => x.OverheadName.Contains(filter.OverheadName));
-
-                if (!string.IsNullOrWhiteSpace(filter.OverheadType))
-                    query = query.Where(x => x.OverheadType == filter.OverheadType);
+                if (filter.OverheadTypeId.HasValue)
+                    query = query.Where(x => x.OverheadTypeId == filter.OverheadTypeId.Value);
 
                 if (!string.IsNullOrWhiteSpace(filter.SortColumn))
                 {
                     query = filter.SortColumn.ToLower() switch
                     {
-                        "overheadname" => filter.SortDescending
-                            ? query.OrderByDescending(x => x.OverheadName)
-                            : query.OrderBy(x => x.OverheadName),
-                        "overheadtype" => filter.SortDescending
-                            ? query.OrderByDescending(x => x.OverheadType)
-                            : query.OrderBy(x => x.OverheadType),
-                        "costvalue" => filter.SortDescending
-                            ? query.OrderByDescending(x => x.CostValue)
-                            : query.OrderBy(x => x.CostValue),
+                        "overheadtypeid" => filter.SortDescending
+                            ? query.OrderByDescending(x => x.OverheadTypeId)
+                            : query.OrderBy(x => x.OverheadTypeId),
+                        "uom" => filter.SortDescending
+                            ? query.OrderByDescending(x => x.Uom)
+                            : query.OrderBy(x => x.Uom),
+                        "unitprice" => filter.SortDescending
+                            ? query.OrderByDescending(x => x.UnitPrice)
+                            : query.OrderBy(x => x.UnitPrice),
+                        "qtyperproduct" => filter.SortDescending
+                            ? query.OrderByDescending(x => x.QtyPerProduct)
+                            : query.OrderBy(x => x.QtyPerProduct),
+                        "totalvalue" => filter.SortDescending
+                            ? query.OrderByDescending(x => x.TotalValue)
+                            : query.OrderBy(x => x.TotalValue),
                         "note" => filter.SortDescending
                             ? query.OrderByDescending(x => x.Note)
                             : query.OrderBy(x => x.Note),
@@ -76,27 +83,24 @@ namespace FlowCycle.Persistance.Repositories
             return await query.ToListAsync(ct);
         }
 
-        public async Task<CostingOverheadDao> CreateAsync(CostingOverheadDao overhead, CancellationToken ct)
+        public async Task<CostingOverheadDao> CreateAsync(CostingOverheadDao costingOverhead, CancellationToken ct)
         {
-            _context.CostingOverheads.Add(overhead);
+            _context.CostingOverheads.Add(costingOverhead);
             await _context.SaveChangesAsync(ct);
-            return overhead;
+            return costingOverhead;
         }
 
-        public async Task<CostingOverheadDao> UpdateAsync(CostingOverheadDao overhead, CancellationToken ct)
+        public async Task<CostingOverheadDao> UpdateAsync(CostingOverheadDao costingOverhead, CancellationToken ct)
         {
-            var existing = await _context.CostingOverheads.FindAsync(new object[] { overhead.Id }, ct);
-            if (existing == null)
-                throw new KeyNotFoundException($"CostingOverhead with ID {overhead.Id} not found");
-
-            _context.Entry(existing).CurrentValues.SetValues(overhead);
+            _context.CostingOverheads.Update(costingOverhead);
             await _context.SaveChangesAsync(ct);
-            return existing;
+            return costingOverhead;
         }
 
-        public async Task DeleteAsync(CostingOverheadDao overhead, CancellationToken ct)
+        public async Task DeleteAsync(int id, CancellationToken ct)
         {
-            _context.CostingOverheads.Remove(overhead);
+            var costingOverhead = await GetByIdAsync(id, ct);
+            _context.CostingOverheads.Remove(costingOverhead);
             await _context.SaveChangesAsync(ct);
         }
 
