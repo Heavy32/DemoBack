@@ -26,7 +26,7 @@ namespace FlowCycle.Domain.Costing
         {
             var filterDao = filter != null ? _mapper.Map<CostingFilterDao>(filter) : null;
             var daos = await _costingRepository.GetListAsync(filterDao, ct);
-            return daos.Select(_mapper.Map<CostingModel>);
+            return _mapper.Map<IEnumerable<CostingModel>>(daos);
         }
 
         public async Task<CostingModel> CreateAsync(CostingModel costing, CancellationToken ct)
