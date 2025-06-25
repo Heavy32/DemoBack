@@ -9,5 +9,6 @@ namespace FlowCycle.Persistance.Repositories
         Task<CostingOverheadDao> CreateAsync(CostingOverheadDao overhead, CancellationToken ct);
         Task<CostingOverheadDao> UpdateAsync(CostingOverheadDao overhead, CancellationToken ct);
         Task DeleteAsync(int id, CancellationToken ct);
+        Task<OverheadTypeDao?> GetByNameAsync(string name, CancellationToken ct);
     }
 }

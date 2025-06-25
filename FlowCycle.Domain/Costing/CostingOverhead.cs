@@ -38,5 +38,9 @@ namespace FlowCycle.Domain.Costing
 
         [MaxLength(255)]
         public string? Note { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string Name { get; set; } = null!;
     }
 }

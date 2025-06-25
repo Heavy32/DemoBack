@@ -3,6 +3,7 @@ using System;
 using FlowCycle.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlowCycle.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250618130626_UpdateCostingMaterialTypeName")]
+    partial class UpdateCostingMaterialTypeName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,11 +192,6 @@ namespace FlowCycle.Persistance.Migrations
                         {
                             Id = 4,
                             Name = "комплектующие"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "материал"
                         });
                 });
 
@@ -207,11 +205,6 @@ namespace FlowCycle.Persistance.Migrations
 
                     b.Property<int>("CostingId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Note")
                         .HasMaxLength(255)
@@ -264,17 +257,12 @@ namespace FlowCycle.Persistance.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Прогнозный"
+                            Name = "Прогнозная"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Фактический"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Плановый"
+                            Name = "Фактическая"
                         });
                 });
 

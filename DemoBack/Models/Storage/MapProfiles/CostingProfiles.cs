@@ -4,6 +4,7 @@ using FlowCycle.Domain.Costing;
 using FlowCycle.Domain.Storage;
 using FlowCycle.Domain.Storage.Models;
 using FlowCycle.Persistance.Repositories.Models;
+using FlowCycle.Persistance.Storage;
 
 namespace DemoBack.Models.Storage.MapProfiles
 {
@@ -21,7 +22,11 @@ namespace DemoBack.Models.Storage.MapProfiles
             CreateMap<CostingModel, CostingDao>();
 
             // DAO to Domain mappings
-            CreateMap<CostingDao, CostingModel>();
+            CreateMap<CostingDao, CostingModel>()
+                .ForMember(dest => dest.CostingType, opt => opt.MapFrom(src => src.CostingType))
+                .ForMember(dest => dest.Project, opt => opt.MapFrom(src => src.Project));
+            CreateMap<CostingTypeDao, CostingType>();
+            CreateMap<ProjectDao, Project>();
 
             // Filter mappings
             CreateMap<CostingFilterDto, CostingFilter>();

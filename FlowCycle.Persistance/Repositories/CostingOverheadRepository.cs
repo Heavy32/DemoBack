@@ -86,14 +86,12 @@ namespace FlowCycle.Persistance.Repositories
         public async Task<CostingOverheadDao> CreateAsync(CostingOverheadDao costingOverhead, CancellationToken ct)
         {
             _context.CostingOverheads.Add(costingOverhead);
-            await _context.SaveChangesAsync(ct);
             return costingOverhead;
         }
 
         public async Task<CostingOverheadDao> UpdateAsync(CostingOverheadDao costingOverhead, CancellationToken ct)
         {
             _context.CostingOverheads.Update(costingOverhead);
-            await _context.SaveChangesAsync(ct);
             return costingOverhead;
         }
 
@@ -101,12 +99,17 @@ namespace FlowCycle.Persistance.Repositories
         {
             var costingOverhead = await GetByIdAsync(id, ct);
             _context.CostingOverheads.Remove(costingOverhead);
-            await _context.SaveChangesAsync(ct);
         }
 
         public async Task<bool> ExistsAsync(int id)
         {
             return await _context.CostingOverheads.AnyAsync(o => o.Id == id);
+        }
+
+        public async Task<OverheadTypeDao?> GetByNameAsync(string name, CancellationToken ct)
+        {
+            return await _context.OverheadTypes
+                .FirstOrDefaultAsync(o => o.Name == name, ct);
         }
     }
 }

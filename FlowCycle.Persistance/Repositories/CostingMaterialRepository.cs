@@ -16,7 +16,7 @@ namespace FlowCycle.Persistance.Repositories
         {
             return await _context.CostingMaterials
                 .Include(m => m.Costing)
-                .Include(m => m.Material)
+                .Include(m => m.CostingMaterialType)
                 .ToListAsync();
         }
 
@@ -24,7 +24,7 @@ namespace FlowCycle.Persistance.Repositories
         {
             return await _context.CostingMaterials
                 .Include(m => m.Costing)
-                .Include(m => m.Material)
+                .Include(m => m.CostingMaterialType)
                 .FirstOrDefaultAsync(m => m.Id == id, ct)
                 ?? throw new KeyNotFoundException($"CostingMaterial with ID {id} not found");
         }
@@ -33,7 +33,7 @@ namespace FlowCycle.Persistance.Repositories
         {
             return await _context.CostingMaterials
                 .Include(m => m.Costing)
-                .Include(m => m.Material)
+                .Include(m => m.CostingMaterialType)
                 .Where(m => m.CostingId == costingId)
                 .ToListAsync();
         }
@@ -42,7 +42,7 @@ namespace FlowCycle.Persistance.Repositories
         {
             var query = _context.CostingMaterials
                 .Include(m => m.Costing)
-                .Include(m => m.Material)
+                .Include(m => m.CostingMaterialType)
                 .AsQueryable();
 
             if (filter != null)
@@ -50,16 +50,16 @@ namespace FlowCycle.Persistance.Repositories
                 if (filter.CostingId.HasValue)
                     query = query.Where(x => x.CostingId == filter.CostingId.Value);
 
-                if (filter.MaterialId.HasValue)
-                    query = query.Where(x => x.MaterialId == filter.MaterialId.Value);
+                if (filter.MaterialTypeId.HasValue)
+                    query = query.Where(x => x.CostingMaterialTypeId == filter.MaterialTypeId.Value);
 
                 if (!string.IsNullOrWhiteSpace(filter.SortColumn))
                 {
                     query = filter.SortColumn.ToLower() switch
                     {
-                        "materialid" => filter.SortDescending
-                            ? query.OrderByDescending(x => x.MaterialId)
-                            : query.OrderBy(x => x.MaterialId),
+                        "materialtypeid" => filter.SortDescending
+                            ? query.OrderByDescending(x => x.CostingMaterialTypeId)
+                            : query.OrderBy(x => x.CostingMaterialTypeId),
                         "uom" => filter.SortDescending
                             ? query.OrderByDescending(x => x.Uom)
                             : query.OrderBy(x => x.Uom),
@@ -86,14 +86,12 @@ namespace FlowCycle.Persistance.Repositories
         public async Task<CostingMaterialDao> CreateAsync(CostingMaterialDao costingMaterial, CancellationToken ct)
         {
             _context.CostingMaterials.Add(costingMaterial);
-            await _context.SaveChangesAsync(ct);
             return costingMaterial;
         }
 
         public async Task<CostingMaterialDao> UpdateAsync(CostingMaterialDao costingMaterial, CancellationToken ct)
         {
             _context.CostingMaterials.Update(costingMaterial);
-            await _context.SaveChangesAsync(ct);
             return costingMaterial;
         }
 
@@ -101,7 +99,6 @@ namespace FlowCycle.Persistance.Repositories
         {
             var costingMaterial = await GetByIdAsync(id, ct);
             _context.CostingMaterials.Remove(costingMaterial);
-            await _context.SaveChangesAsync(ct);
         }
     }
 }

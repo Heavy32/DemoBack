@@ -34,6 +34,10 @@ namespace FlowCycle.Persistance.Repositories.Models
         [MaxLength(255)]
         public string? Note { get; set; }
 
+        [Required]
+        [MaxLength(255)]
+        public string Name { get; set; } = null!;
+
         [ForeignKey(nameof(CostingId))]
         public CostingDao Costing { get; set; } = null!;
 

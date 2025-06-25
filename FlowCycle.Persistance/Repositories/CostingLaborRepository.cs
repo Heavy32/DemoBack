@@ -61,21 +61,18 @@ namespace FlowCycle.Persistance.Repositories
         public async Task<CostingLaborDao> CreateAsync(CostingLaborDao costingLabor, CancellationToken ct)
         {
             _dbContext.CostingLabors.Add(costingLabor);
-            await _dbContext.SaveChangesAsync(ct);
             return costingLabor;
         }
 
         public async Task<CostingLaborDao> UpdateAsync(CostingLaborDao costingLabor, CancellationToken ct)
         {
             _dbContext.CostingLabors.Update(costingLabor);
-            await _dbContext.SaveChangesAsync(ct);
             return costingLabor;
         }
 
         public async Task DeleteAsync(CostingLaborDao costingLabor, CancellationToken ct)
         {
             _dbContext.CostingLabors.Remove(costingLabor);
-            await _dbContext.SaveChangesAsync(ct);
         }
     }
 }

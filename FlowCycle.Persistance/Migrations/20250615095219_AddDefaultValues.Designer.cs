@@ -3,6 +3,7 @@ using System;
 using FlowCycle.Persistance;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FlowCycle.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250615095219_AddDefaultValues")]
+    partial class AddDefaultValues
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,7 +125,7 @@ namespace FlowCycle.Persistance.Migrations
                     b.Property<int>("CostingId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CostingMaterialTypeId")
+                    b.Property<int>("MaterialId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Note")
@@ -147,54 +150,9 @@ namespace FlowCycle.Persistance.Migrations
 
                     b.HasIndex("CostingId");
 
-                    b.HasIndex("CostingMaterialTypeId");
+                    b.HasIndex("MaterialId");
 
                     b.ToTable("CostingMaterials");
-                });
-
-            modelBuilder.Entity("FlowCycle.Persistance.Repositories.Models.CostingMaterialTypeDao", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CostingMaterialTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "сырье"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "полуфабрикаты"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "оборудование"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "комплектующие"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "материал"
-                        });
                 });
 
             modelBuilder.Entity("FlowCycle.Persistance.Repositories.Models.CostingOverheadDao", b =>
@@ -207,11 +165,6 @@ namespace FlowCycle.Persistance.Migrations
 
                     b.Property<int>("CostingId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Note")
                         .HasMaxLength(255)
@@ -264,18 +217,41 @@ namespace FlowCycle.Persistance.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Прогнозный"
+                            Name = "Прогнозная"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Фактический"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Плановый"
+                            Name = "Фактическая"
                         });
+                });
+
+            modelBuilder.Entity("FlowCycle.Persistance.Repositories.Models.MaterialDao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("MaterialType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Materials");
                 });
 
             modelBuilder.Entity("FlowCycle.Persistance.Repositories.Models.OverheadTypeDao", b =>
@@ -518,15 +494,15 @@ namespace FlowCycle.Persistance.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FlowCycle.Persistance.Repositories.Models.CostingMaterialTypeDao", "CostingMaterialType")
+                    b.HasOne("FlowCycle.Persistance.Repositories.Models.MaterialDao", "Material")
                         .WithMany()
-                        .HasForeignKey("CostingMaterialTypeId")
+                        .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Costing");
 
-                    b.Navigation("CostingMaterialType");
+                    b.Navigation("Material");
                 });
 
             modelBuilder.Entity("FlowCycle.Persistance.Repositories.Models.CostingOverheadDao", b =>

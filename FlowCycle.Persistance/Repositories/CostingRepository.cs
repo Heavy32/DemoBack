@@ -1,4 +1,5 @@
 using FlowCycle.Persistance.Repositories.Models;
+using FlowCycle.Persistance.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlowCycle.Persistance.Repositories
@@ -87,14 +88,12 @@ namespace FlowCycle.Persistance.Repositories
         public async Task<CostingDao> CreateAsync(CostingDao costing, CancellationToken ct)
         {
             _dbContext.Costings.Add(costing);
-            await _dbContext.SaveChangesAsync(ct);
             return costing;
         }
 
         public async Task<CostingDao> UpdateAsync(CostingDao costing, CancellationToken ct)
         {
             _dbContext.Costings.Update(costing);
-            await _dbContext.SaveChangesAsync(ct);
             return costing;
         }
 
@@ -102,7 +101,40 @@ namespace FlowCycle.Persistance.Repositories
         {
             var costing = await GetByIdAsync(id, ct);
             _dbContext.Costings.Remove(costing);
-            await _dbContext.SaveChangesAsync(ct);
+        }
+
+        public async Task<ProjectDao> GetProjectByNameAsync(string name, CancellationToken ct)
+        {
+            var project = await _dbContext.Projects
+                .FirstOrDefaultAsync(p => p.Name == name, ct);
+
+            if (project == null)
+            {
+                throw new KeyNotFoundException($"Project with name '{name}' not found");
+            }
+
+            return project;
+        }
+
+        public async Task<CostingTypeDao> GetCostingTypeByNameAsync(string name, CancellationToken ct)
+        {
+            var costingType = await _dbContext.CostingTypes
+                .FirstOrDefaultAsync(ct => ct.Name == name, ct);
+
+            if (costingType == null)
+            {
+                throw new KeyNotFoundException($"Costing type with name '{name}' not found");
+            }
+
+            return costingType;
+        }
+
+        public async Task<CostingDao?> GetByNameAsync(string productName, CancellationToken ct)
+        {
+            return await _dbContext.Costings
+                .Include(x => x.Project)
+                .Include(x => x.CostingType)
+                .FirstOrDefaultAsync(x => x.ProductName == productName, ct);
         }
     }
 }

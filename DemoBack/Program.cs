@@ -62,6 +62,29 @@ internal class Program
 
         var app = builder.Build();
 
+        // Ensure database exists
+        try
+        {
+            using var scope = app.Services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            dbContext.Database.Migrate();
+            if (!dbContext.Database.CanConnect())
+            {
+                Console.WriteLine("Creating database...");
+                dbContext.Database.EnsureCreated();
+            }
+            else
+            {
+                Console.WriteLine("Database exists and is ready.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred while connecting to the database: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+            throw;
+        }
+
         // Configure the HTTP request pipeline
         if (app.Environment.IsDevelopment())
         {

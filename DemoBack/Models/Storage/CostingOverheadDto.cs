@@ -11,7 +11,7 @@ namespace FlowCycle.Api.Models.Storage
 
         [Required]
         [MaxLength(255)]
-        public string OverheadName { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
         public OverheadTypeDto OverheadType { get; set; } = null!;
 

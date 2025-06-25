@@ -107,7 +107,6 @@ namespace FlowCycle.Persistance.Repositories
         public async Task<StockItemDao> CreateAsync(StockItemDao stockItem, CancellationToken ct)
         {
             _context.Stocks.Add(stockItem);
-            await _context.SaveChangesAsync(ct);
             return stockItem;
         }
 
@@ -120,14 +119,12 @@ namespace FlowCycle.Persistance.Repositories
             }
 
             _context.Entry(existingItem).CurrentValues.SetValues(stockItem);
-            await _context.SaveChangesAsync(ct);
             return existingItem;
         }
 
         public async Task DeleteAsync(StockItemDao stockItem, CancellationToken ct)
         {
             _context.Stocks.Remove(stockItem);
-            await _context.SaveChangesAsync(ct);
         }
     }
-} 
+}

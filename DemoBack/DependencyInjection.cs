@@ -37,6 +37,10 @@ namespace FlowCycle.Api
             services.AddScoped<ICostingRepository, CostingRepository>();
             services.AddScoped<ICostingLaborRepository, CostingLaborRepository>();
             services.AddScoped<ICostingOverheadRepository, CostingOverheadRepository>();
+            services.AddScoped<ICostingMaterialTypeRepository, CostingMaterialTypeRepository>();
+
+            // Unit of Work
+            services.AddScoped<FlowCycle.Persistance.UnitOfWork.IUnitOfWork, FlowCycle.Persistance.UnitOfWork.UnitOfWork>();
 
             return services;
         }
@@ -53,6 +57,8 @@ namespace FlowCycle.Api
             services.AddScoped<ICostingService, CostingService>();
             services.AddScoped<ICostingLaborService, CostingLaborService>();
             services.AddScoped<ICostingOverheadService, CostingOverheadService>();
+            services.AddScoped<ICostingImportService, CostingImportService>();
+            services.AddScoped<ICostingMaterialTypeService, CostingMaterialTypeService>();
 
             return services;
         }

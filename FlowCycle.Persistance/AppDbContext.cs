@@ -24,8 +24,8 @@ namespace FlowCycle.Persistance
         public DbSet<CostingLaborDao> CostingLabors { get; set; }
         public DbSet<CostingOverheadDao> CostingOverheads { get; set; } = null!;
         public DbSet<CostingTypeDao> CostingTypes { get; set; } = null!;
-        public DbSet<MaterialDao> Materials { get; set; } = null!;
         public DbSet<OverheadTypeDao> OverheadTypes { get; set; } = null!;
+        public DbSet<CostingMaterialTypeDao> CostingMaterialTypes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,13 +62,23 @@ namespace FlowCycle.Persistance
 
             // Seed CostingTypes
             modelBuilder.Entity<CostingTypeDao>().HasData(
-                new CostingTypeDao { Id = 1, Name = "Прогнозная" },
-                new CostingTypeDao { Id = 2, Name = "Фактическая" }
+                new CostingTypeDao { Id = 1, Name = "Прогнозный" },
+                new CostingTypeDao { Id = 2, Name = "Фактический" },
+                new CostingTypeDao { Id = 3, Name = "Плановый" }
             );
 
             modelBuilder.Entity<OverheadTypeDao>().HasData(
                 new OverheadTypeDao { Id = 1, Name = "Прямой" },
                 new OverheadTypeDao { Id = 2, Name = "Косвенный" }
+            );
+
+            // Seed CostingMaterialTypes
+            modelBuilder.Entity<CostingMaterialTypeDao>().HasData(
+                new CostingMaterialTypeDao { Id = 1, Name = "сырье" },
+                new CostingMaterialTypeDao { Id = 2, Name = "полуфабрикаты" },
+                new CostingMaterialTypeDao { Id = 3, Name = "оборудование" },
+                new CostingMaterialTypeDao { Id = 4, Name = "комплектующие" },
+                new CostingMaterialTypeDao { Id = 5, Name = "материал" }
             );
         }
     }

@@ -16,10 +16,10 @@ namespace FlowCycle.Persistance.Repositories.Models
         public CostingDao Costing { get; set; } = null!;
 
         [Required]
-        public int MaterialId { get; set; }
+        public int CostingMaterialTypeId { get; set; }
 
-        [ForeignKey(nameof(MaterialId))]
-        public MaterialDao Material { get; set; } = null!;
+        [ForeignKey(nameof(CostingMaterialTypeId))]
+        public CostingMaterialTypeDao CostingMaterialType { get; set; } = null!;
 
         [Required]
         [MaxLength(50)]
