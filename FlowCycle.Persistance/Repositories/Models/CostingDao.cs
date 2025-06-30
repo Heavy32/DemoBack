@@ -48,5 +48,9 @@ namespace FlowCycle.Persistance.Repositories.Models
 
         [Required]
         public DateTime UpdatedAt { get; set; }
+
+        public ICollection<CostingLaborDao> CostingLabors { get; set; } = new List<CostingLaborDao>();
+        public ICollection<CostingMaterialDao> CostingMaterials { get; set; } = new List<CostingMaterialDao>();
+        public ICollection<CostingOverheadDao> CostingOverheads { get; set; } = new List<CostingOverheadDao>();
     }
 }

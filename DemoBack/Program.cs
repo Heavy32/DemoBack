@@ -9,12 +9,22 @@ using Microsoft.AspNetCore.Http;
 using FlowCycle.Api;
 using FlowCycle.Domain.Storage;
 using FlowCycle.Persistance.Repositories;
+using AutoMapper;
+using DemoBack.Models.Storage.MapProfiles;
+using FlowCycle.Api.Models.Storage.MapProfiles;
+using DemoBack.Mapping;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        // Configure Kestrel to disable MinRequestBodyDataRate
+        builder.WebHost.ConfigureKestrel(serverOptions =>
+        {
+            serverOptions.Limits.MinRequestBodyDataRate = null;
+        });
 
         // Add services to the container
         builder.Services.AddControllers(); // For API controllers only
@@ -61,7 +71,13 @@ internal class Program
         });
 
         var app = builder.Build();
-
+        var config = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<CostingProfiles>();
+            cfg.AddProfile<MappingProfile>();
+            // Add other profiles as needed
+        });
+        config.AssertConfigurationIsValid();
         // Ensure database exists
         try
         {

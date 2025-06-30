@@ -48,7 +48,7 @@ namespace FlowCycle.Tests.Services
             {
                 Id = 1,
                 CostingId = 1,
-                MaterialTypeId = 1,
+                CostingMaterialTypeId = 1,
                 Uom = "шт",
                 UnitPrice = 100,
                 QtyPerProduct = 2,
@@ -66,7 +66,7 @@ namespace FlowCycle.Tests.Services
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Id, Is.EqualTo(1));
             Assert.That(result.CostingId, Is.EqualTo(1));
-            Assert.That(result.MaterialTypeId, Is.EqualTo(1));
+            Assert.That(result.CostingMaterialTypeId, Is.EqualTo(1));
             Assert.That(result.TotalValue, Is.EqualTo(200));
             _costingMaterialRepositoryMock.Verify(x => x.GetByIdAsync(1, _defaultCancellationToken), Times.Once);
             _mapperMock.Verify(x => x.Map<CostingMaterial>(expectedMaterial), Times.Once);
@@ -91,7 +91,7 @@ namespace FlowCycle.Tests.Services
             var materialModel = new CostingMaterial
             {
                 CostingId = 1,
-                MaterialTypeId = 1,
+                CostingMaterialTypeId = 1,
                 Uom = "шт",
                 UnitPrice = 100,
                 QtyPerProduct = 2,
@@ -120,7 +120,7 @@ namespace FlowCycle.Tests.Services
             {
                 Id = 1,
                 CostingId = 1,
-                MaterialTypeId = 1,
+                CostingMaterialTypeId = 1,
                 Uom = "шт",
                 UnitPrice = 100,
                 QtyPerProduct = 2,
@@ -141,7 +141,7 @@ namespace FlowCycle.Tests.Services
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Id, Is.EqualTo(1));
             Assert.That(result.CostingId, Is.EqualTo(1));
-            Assert.That(result.MaterialTypeId, Is.EqualTo(1));
+            Assert.That(result.CostingMaterialTypeId, Is.EqualTo(1));
             Assert.That(result.TotalValue, Is.EqualTo(200));
             _costingMaterialRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<CostingMaterialDao>(), _defaultCancellationToken), Times.Once);
             _mapperMock.Verify(x => x.Map<CostingMaterialDao>(materialModel), Times.Once);
@@ -155,7 +155,7 @@ namespace FlowCycle.Tests.Services
             {
                 Id = 1,
                 CostingId = 1,
-                MaterialTypeId = 1,
+                CostingMaterialTypeId = 1,
                 Uom = "шт",
                 UnitPrice = 150,
                 QtyPerProduct = 3,
@@ -185,7 +185,7 @@ namespace FlowCycle.Tests.Services
             {
                 Id = 1,
                 CostingId = 1,
-                MaterialTypeId = 1,
+                CostingMaterialTypeId = 1,
                 Uom = "шт",
                 UnitPrice = 150,
                 QtyPerProduct = 3,
@@ -206,7 +206,7 @@ namespace FlowCycle.Tests.Services
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Id, Is.EqualTo(1));
             Assert.That(result.CostingId, Is.EqualTo(1));
-            Assert.That(result.MaterialTypeId, Is.EqualTo(1));
+            Assert.That(result.CostingMaterialTypeId, Is.EqualTo(1));
             Assert.That(result.TotalValue, Is.EqualTo(450));
             _costingMaterialRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<CostingMaterialDao>(), _defaultCancellationToken), Times.Once);
             _mapperMock.Verify(x => x.Map<CostingMaterialDao>(materialModel), Times.Once);
@@ -240,8 +240,8 @@ namespace FlowCycle.Tests.Services
             };
             var expectedModels = new List<CostingMaterial>
             {
-                new CostingMaterial { Id = 1, CostingId = 1, MaterialTypeId = 1 },
-                new CostingMaterial { Id = 2, CostingId = 1, MaterialTypeId = 2 }
+                new CostingMaterial { Id = 1, CostingId = 1, CostingMaterialTypeId = 1 },
+                new CostingMaterial { Id = 2, CostingId = 1, CostingMaterialTypeId = 2 }
             };
 
             _mapperMock.Setup(x => x.Map<CostingMaterialFilterDao>(filter))

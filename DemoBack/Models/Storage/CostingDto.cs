@@ -1,3 +1,4 @@
+using FlowCycle.Api.Models.Storage;
 using FlowCycle.Api.Storage;
 
 namespace DemoBack.Models.Storage
@@ -15,5 +16,9 @@ namespace DemoBack.Models.Storage
         public ProjectDto Project { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public ICollection<CostingLaborDto> CostingLabors { get; set; } = new List<CostingLaborDto>();
+        public ICollection<CostingMaterialDto> CostingMaterials { get; set; } = new List<CostingMaterialDto>();
+        public ICollection<CostingOverheadDto> CostingOverheads { get; set; } = new List<CostingOverheadDto>();
     }
 }

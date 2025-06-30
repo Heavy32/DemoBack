@@ -7,6 +7,7 @@ namespace DemoBack.Models.Storage
         public int? CostingId { get; set; }
 
         public string? LaborName { get; set; }
+        public string? LaborType { get; set; }
 
         [RegularExpression(@"^(laborName|hours|hourRate|totalValue|note)$",
             ErrorMessage = "Invalid sort column. Valid values are: laborName, hours, hourRate, totalValue, note")]

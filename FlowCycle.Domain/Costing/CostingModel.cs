@@ -29,5 +29,9 @@ namespace FlowCycle.Domain.Costing
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public ICollection<CostingLabor> CostingLabors { get; set; } = new List<CostingLabor>();
+        public ICollection<CostingMaterial> CostingMaterials { get; set; } = new List<CostingMaterial>();
+        public ICollection<CostingOverhead> CostingOverheads { get; set; } = new List<CostingOverhead>();
     }
 }

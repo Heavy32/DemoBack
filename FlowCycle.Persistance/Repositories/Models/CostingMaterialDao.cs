@@ -39,5 +39,8 @@ namespace FlowCycle.Persistance.Repositories.Models
 
         [MaxLength(500)]
         public string? Note { get; set; }
+
+        [MaxLength(50)]
+        public string? Code { get; set; }
     }
 }

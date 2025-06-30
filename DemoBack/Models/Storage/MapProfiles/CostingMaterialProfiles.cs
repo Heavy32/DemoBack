@@ -11,6 +11,7 @@ namespace FlowCycle.Api.Models.Storage.MapProfiles
     {
         public CostingMaterialProfiles()
         {
+            // Removed generic CostingMaterial mappings to avoid duplication. All CostingMaterial mappings are now in CostingProfiles.cs.
             // Domain to DTO mappings
             CreateMap<CostingMaterial, CostingMaterialDto>();
             CreateMap<CostingMaterialFilter, CostingMaterialFilterDto>();

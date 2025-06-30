@@ -16,7 +16,17 @@ namespace FlowCycle.Api.Models.Storage
         public OverheadTypeDto OverheadType { get; set; } = null!;
 
         [Required]
-        public decimal CostValue { get; set; }
+        [MaxLength(50)]
+        public string Uom { get; set; } = null!;
+
+        [Required]
+        public decimal UnitPrice { get; set; }
+
+        [Required]
+        public decimal QtyPerProduct { get; set; }
+
+        [Required]
+        public decimal TotalValue { get; set; }
 
         [MaxLength(500)]
         public string? Note { get; set; }

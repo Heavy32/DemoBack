@@ -1,6 +1,8 @@
 using FlowCycle.Domain.Costing;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using AutoMapper;
+using DemoBack.Models.Storage;
 
 namespace FlowCycle.Api.Controllers
 {
@@ -13,10 +15,12 @@ namespace FlowCycle.Api.Controllers
     public class CostingImportController : ControllerBase
     {
         private readonly ICostingImportService _importService;
+        private readonly IMapper _mapper;
 
-        public CostingImportController(ICostingImportService importService)
+        public CostingImportController(ICostingImportService importService, IMapper mapper)
         {
             _importService = importService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -46,7 +50,8 @@ namespace FlowCycle.Api.Controllers
             using var stream = file.OpenReadStream();
             var costing = await _importService.ImportFromExcelAsync(stream, ct);
 
-            return Ok(costing);
+            var costingDtos = _mapper.Map<CostingDto[]>(costing);
+            return Ok(costingDtos);
         }
     }
 }

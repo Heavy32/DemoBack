@@ -18,6 +18,10 @@ namespace FlowCycle.Persistance.Repositories
             return await _dbContext.Costings
                 .Include(x => x.Project)
                 .Include(x => x.CostingType)
+                .Include(x => x.CostingLabors)
+                .Include(x => x.CostingMaterials)
+                    .ThenInclude(m => m.CostingMaterialType)
+                .Include(x => x.CostingOverheads)
                 .FirstOrDefaultAsync(x => x.Id == id, ct)
                 ?? throw new KeyNotFoundException($"Costing with ID {id} not found");
         }
@@ -27,6 +31,10 @@ namespace FlowCycle.Persistance.Repositories
             var query = _dbContext.Costings
                 .Include(x => x.Project)
                 .Include(x => x.CostingType)
+                .Include(x => x.CostingLabors)
+                .Include(x => x.CostingMaterials)
+                    .ThenInclude(m => m.CostingMaterialType)
+                .Include(x => x.CostingOverheads)
                 .AsQueryable();
 
             if (filter != null)
@@ -134,6 +142,10 @@ namespace FlowCycle.Persistance.Repositories
             return await _dbContext.Costings
                 .Include(x => x.Project)
                 .Include(x => x.CostingType)
+                .Include(x => x.CostingLabors)
+                .Include(x => x.CostingMaterials)
+                    .ThenInclude(m => m.CostingMaterialType)
+                .Include(x => x.CostingOverheads)
                 .FirstOrDefaultAsync(x => x.ProductName == productName, ct);
         }
     }

@@ -11,28 +11,30 @@ namespace DemoBack.Mapping
     {
         public MappingProfile()
         {
+            // Project
+            CreateMap<ProjectDao, Project>().ReverseMap();
+            CreateMap<Project, ProjectDao>().ReverseMap();
+            CreateMap<Project, ProjectDto>().ReverseMap();
+            CreateMap<ProjectDao, ProjectDto>().ReverseMap();
+
             // Domain to DTO mappings
             CreateMap<StockItem, StockItemDto>();
             CreateMap<Category, CategoryDto>();
-            CreateMap<Project, ProjectDto>();
             CreateMap<Supplier, SupplierDto>();
 
             // DTO to Domain mappings
             CreateMap<StockItemDto, StockItem>();
             CreateMap<CategoryDto, Category>();
-            CreateMap<ProjectDto, Project>();
             CreateMap<SupplierDto, Supplier>();
 
             // Domain to DAO mappings
             CreateMap<StockItem, StockItemDao>();
             CreateMap<Category, CategoryDao>();
-            CreateMap<Project, ProjectDao>();
             CreateMap<Supplier, SupplierDao>();
 
             // DAO to Domain mappings
             CreateMap<StockItemDao, StockItem>();
             CreateMap<CategoryDao, Category>();
-            CreateMap<ProjectDao, Project>();
             CreateMap<SupplierDao, Supplier>();
 
             // Filter mappings
@@ -40,4 +42,4 @@ namespace DemoBack.Mapping
             CreateMap<StockItemFilter, StockItemFilterDao>();
         }
     }
-} 
+}

@@ -46,11 +46,13 @@ namespace FlowCycle.Domain.Costing
                 for (int pageNumber = 2; pageNumber <= workbook.Worksheets.Count; pageNumber++)
                 {
                     var worksheet = workbook.Worksheet(pageNumber);
-                    await ProcessEntityPage(worksheet, ct);
+                    await ProcessEntityPage(worksheet, costings, ct);
                 }
                 await _unitOfWork.SaveChangesAsync(ct);
+
+                var mappedResult = costings.Select(c => _mapper.Map<CostingModel>(c)).ToList();
                 await transaction.CommitAsync(ct);
-                return costings.Select(c => _mapper.Map<CostingModel>(c)).ToList();
+                return mappedResult;
             }
             catch
             {
@@ -100,14 +102,15 @@ namespace FlowCycle.Domain.Costing
             return result;
         }
 
-
-        private async Task ProcessEntityPage(IXLWorksheet worksheet, CancellationToken ct)
+        private async Task ProcessEntityPage(IXLWorksheet worksheet, List<CostingDao> costings, CancellationToken ct)
         {
             var startRow = 2; // Skip header row
             var endRow = worksheet.LastRowUsed().RowNumber();
 
             var costingName = worksheet.Cell(3, 3).GetValue<string>();
-            var costing = await _costingRepository.GetByNameAsync(costingName, ct);
+            var costing = costings.FirstOrDefault(c => c.ProductName == costingName);
+            if (costing == null)
+                throw new Exception($"Costing with name '{costingName}' not found in memory.");
             for (var i = startRow; i < endRow; i++)
             {
                 var pageTitle = worksheet.Cell(i, 1).GetValue<string>();
@@ -124,7 +127,6 @@ namespace FlowCycle.Domain.Costing
                         break;
                 }
             }
-
         }
 
         private async Task ProcessMaterialsSection(IXLWorksheet worksheet, int startRow, int endRow, CostingDao costing, CancellationToken ct)
@@ -158,6 +160,8 @@ namespace FlowCycle.Domain.Costing
                     TotalValue = worksheet.Cell(row, 8).GetValue<decimal>()
                 };
 
+                costing.CostingMaterials.Add(material);
+
                 await _costingMaterialRepository.CreateAsync(material, ct);
             }
         }
@@ -188,6 +192,8 @@ namespace FlowCycle.Domain.Costing
                     HourRate = worksheet.Cell(row, 5).GetValue<decimal>(),
                     TotalValue = worksheet.Cell(row, 6).GetValue<decimal>()
                 };
+
+                costing.CostingLabors.Add(labor);
 
                 await _costingLaborRepository.CreateAsync(labor, ct);
             }
@@ -224,6 +230,8 @@ namespace FlowCycle.Domain.Costing
                     QtyPerProduct = worksheet.Cell(row, 6).GetValue<decimal>(),
                     TotalValue = worksheet.Cell(row, 8).GetValue<decimal>()
                 };
+
+                costing.CostingOverheads.Add(overhead);
 
                 await _costingOverheadRepository.CreateAsync(overhead, ct);
             }
