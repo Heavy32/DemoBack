@@ -2,7 +2,7 @@
 
 namespace FlowCycle.Domain.Storage
 {
-    public class StockItem
+    public class StorageItem
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -13,9 +13,16 @@ namespace FlowCycle.Domain.Storage
         public double SinglePrice { get; set; }
         public double VAT { get; set; }
         public double TotalPrice { get; set; }
-        public DateTime ReceiptDate { get; set; }
+        public DateTime ArrivalDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
         public Supplier Supplier { get; set; }
         public Project Project { get; set; }
         public bool IsArchived { get; set; }
+        /// <summary>
+        /// Только для архивных записей
+        /// </summary>
+        public int ArchivedCount { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }

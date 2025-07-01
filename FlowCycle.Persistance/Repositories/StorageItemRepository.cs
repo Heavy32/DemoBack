@@ -6,27 +6,27 @@ using System.Linq.Dynamic.Core;
 
 namespace FlowCycle.Persistance.Repositories
 {
-    public class StockItemRepository : IStockItemRepository
+    public class StorageItemRepository : IStorageItemRepository
     {
         private readonly AppDbContext _context;
 
-        public StockItemRepository(AppDbContext context)
+        public StorageItemRepository(AppDbContext context)
         {
             _context = context;
         }
 
-        public async Task<StockItemDao> GetByIdAsync(int id, CancellationToken ct)
+        public async Task<StorageItemDao> GetByIdAsync(int id, CancellationToken ct)
         {
-            return await _context.Stocks
+            return await _context.Storages
                 .Include(s => s.Category)
                 .Include(s => s.Project)
                 .Include(s => s.Supplier)
                 .FirstOrDefaultAsync(s => s.Id == id, ct);
         }
 
-        public async Task<IEnumerable<StockItemDao>> GetListAsync(StockItemFilterDao? filter = null, CancellationToken ct = default)
+        public async Task<IEnumerable<StorageItemDao>> GetListAsync(StorageItemFilterDao? filter = null, CancellationToken ct = default)
         {
-            var query = _context.Stocks
+            var query = _context.Storages
                 .Include(s => s.Category)
                 .Include(s => s.Project)
                 .Include(s => s.Supplier)
@@ -98,33 +98,51 @@ namespace FlowCycle.Persistance.Repositories
                 "project" => "Project.Name",
                 "price" => "Price",
                 "quantity" => "Quantity",
-                "receiptdate" => "ReceiptDate",
+                "arrivaldate" => "ArrivalDate",
+                "expirationdate" => "ExpirationDate",
+                "updatedate" => "UpdateDate",
+                "createdate" => "CreateDate",
+                "archivedcount" => "ArchivedCount",
                 "isarchived" => "IsArchived",
                 _ => column // Return original if no mapping found
             };
         }
 
-        public async Task<StockItemDao> CreateAsync(StockItemDao stockItem, CancellationToken ct)
+        public async Task<IEnumerable<StorageItemDao>> GetAllAsync(CancellationToken ct = default)
         {
-            _context.Stocks.Add(stockItem);
-            return stockItem;
+            return await _context.Storages
+                .Include(s => s.Category)
+                .Include(s => s.Project)
+                .Include(s => s.Supplier)
+                .ToListAsync(ct);
         }
 
-        public async Task<StockItemDao> UpdateAsync(StockItemDao stockItem, CancellationToken ct)
+        public async Task<StorageItemDao> CreateAsync(StorageItemDao StorageItem, CancellationToken ct)
         {
-            var existingItem = await _context.Stocks.FindAsync(new object[] { stockItem.Id }, ct);
+            _context.Storages.Add(StorageItem);
+            await _context.SaveChangesAsync(ct);
+            return StorageItem;
+        }
+
+        public async Task<StorageItemDao> UpdateAsync(StorageItemDao StorageItem, CancellationToken ct)
+        {
+            var existingItem = await _context.Storages.FindAsync(new object[] { StorageItem.Id }, ct);
             if (existingItem == null)
             {
                 return null;
             }
-
-            _context.Entry(existingItem).CurrentValues.SetValues(stockItem);
+            _context.Entry(existingItem).CurrentValues.SetValues(StorageItem);
+            await _context.SaveChangesAsync(ct);
             return existingItem;
         }
 
-        public async Task DeleteAsync(StockItemDao stockItem, CancellationToken ct)
+        public async Task<bool> DeleteAsync(int id, CancellationToken ct)
         {
-            _context.Stocks.Remove(stockItem);
+            var entity = await _context.Storages.FindAsync(new object[] { id }, ct);
+            if (entity == null) return false;
+            _context.Storages.Remove(entity);
+            await _context.SaveChangesAsync(ct);
+            return true;
         }
     }
 }

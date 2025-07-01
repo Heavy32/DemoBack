@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlowCycle.Persistance.Storage
 {
-    public class StockItemDao
+    [Table("Storages")]
+    public class StorageItemDao
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,10 +17,14 @@ namespace FlowCycle.Persistance.Storage
         public double VAT { get; set; }
         public double TotalPrice { get; set; }
         [Comment("Дата поступления")]
-        public DateTime ReceiptDate { get; set; }
+        public DateTime ArrivalDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
         [Comment("Поставщик")]
         public SupplierDao Supplier { get; set; }
         public ProjectDao Project { get; set; }
         public bool IsArchived { get; set; }
+        public int ArchivedCount { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }

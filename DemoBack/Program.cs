@@ -1,5 +1,5 @@
 using FlowCycle.Persistance;
-using FlowCycle.Domain.Stock;
+using FlowCycle.Domain.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Diagnostics;

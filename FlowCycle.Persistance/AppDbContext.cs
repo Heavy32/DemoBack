@@ -15,7 +15,7 @@ namespace FlowCycle.Persistance
             Database.EnsureCreated();
         }
 
-        public DbSet<StockItemDao> Stocks { get; set; }
+        public DbSet<StorageItemDao> Storages { get; set; }
         public DbSet<ProjectDao> Projects { get; set; }
         public DbSet<CategoryDao> Categories { get; set; }
         public DbSet<SupplierDao> Suppliers { get; set; }
@@ -31,10 +31,10 @@ namespace FlowCycle.Persistance
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<StockItemDao>(entity =>
+            modelBuilder.Entity<StorageItemDao>(entity =>
             {
                 entity.Property(e => e.VAT).HasComment("НДС");
-                entity.Property(e => e.ReceiptDate).HasComment("Дата поступления");
+                entity.Property(e => e.ArrivalDate).HasComment("Дата поступления (Arrival Date)");
             });
 
             // Seed Categories

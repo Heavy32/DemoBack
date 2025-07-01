@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 namespace FlowCycle.Api.Storage
 {
     /// <summary>
-    /// Filter and sort parameters for stock items
+    /// Filter and sort parameters for Storage items
     /// </summary>
-    public class StockItemFilterDto
+    public class StorageItemFilterDto
     {
         /// <summary>
         /// Filter by item name (case-insensitive contains)

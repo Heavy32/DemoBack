@@ -1,6 +1,6 @@
 namespace FlowCycle.Persistance.Repositories.Models
 {
-    public class StockItemFilterDao
+    public class StorageItemFilterDao
     {
         public string? Name { get; set; }
         public string? Supplier { get; set; }

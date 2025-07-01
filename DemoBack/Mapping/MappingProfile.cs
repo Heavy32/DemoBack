@@ -1,6 +1,6 @@
 using AutoMapper;
 using FlowCycle.Api.Storage;
-using FlowCycle.Domain.Stock.Models;
+using FlowCycle.Domain.Storage.Models;
 using FlowCycle.Domain.Storage;
 using FlowCycle.Persistance.Repositories.Models;
 using FlowCycle.Persistance.Storage;
@@ -18,28 +18,52 @@ namespace DemoBack.Mapping
             CreateMap<ProjectDao, ProjectDto>().ReverseMap();
 
             // Domain to DTO mappings
-            CreateMap<StockItem, StockItemDto>();
+            CreateMap<StorageItem, StorageItemDto>()
+                .ForMember(dest => dest.ArrivalDate, opt => opt.MapFrom(src => src.ArrivalDate))
+                .ForMember(dest => dest.ExpirationDate, opt => opt.MapFrom(src => src.ExpirationDate))
+                .ForMember(dest => dest.ArchivedCount, opt => opt.MapFrom(src => src.ArchivedCount))
+                .ForMember(dest => dest.UpdateDate, opt => opt.MapFrom(src => src.UpdateDate))
+                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                .ReverseMap();
             CreateMap<Category, CategoryDto>();
             CreateMap<Supplier, SupplierDto>();
 
             // DTO to Domain mappings
-            CreateMap<StockItemDto, StockItem>();
+            CreateMap<StorageItemDto, StorageItem>()
+                .ForMember(dest => dest.ArrivalDate, opt => opt.MapFrom(src => src.ArrivalDate))
+                .ForMember(dest => dest.ExpirationDate, opt => opt.MapFrom(src => src.ExpirationDate))
+                .ForMember(dest => dest.ArchivedCount, opt => opt.MapFrom(src => src.ArchivedCount))
+                .ForMember(dest => dest.UpdateDate, opt => opt.MapFrom(src => src.UpdateDate))
+                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                .ReverseMap();
             CreateMap<CategoryDto, Category>();
             CreateMap<SupplierDto, Supplier>();
 
             // Domain to DAO mappings
-            CreateMap<StockItem, StockItemDao>();
+            CreateMap<StorageItem, StorageItemDao>()
+                .ForMember(dest => dest.ArrivalDate, opt => opt.MapFrom(src => src.ArrivalDate))
+                .ForMember(dest => dest.ExpirationDate, opt => opt.MapFrom(src => src.ExpirationDate))
+                .ForMember(dest => dest.ArchivedCount, opt => opt.MapFrom(src => src.ArchivedCount))
+                .ForMember(dest => dest.UpdateDate, opt => opt.MapFrom(src => src.UpdateDate))
+                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                .ReverseMap();
             CreateMap<Category, CategoryDao>();
             CreateMap<Supplier, SupplierDao>();
 
             // DAO to Domain mappings
-            CreateMap<StockItemDao, StockItem>();
+            CreateMap<StorageItemDao, StorageItem>()
+                .ForMember(dest => dest.ArrivalDate, opt => opt.MapFrom(src => src.ArrivalDate))
+                .ForMember(dest => dest.ExpirationDate, opt => opt.MapFrom(src => src.ExpirationDate))
+                .ForMember(dest => dest.ArchivedCount, opt => opt.MapFrom(src => src.ArchivedCount))
+                .ForMember(dest => dest.UpdateDate, opt => opt.MapFrom(src => src.UpdateDate))
+                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CreateDate))
+                .ReverseMap();
             CreateMap<CategoryDao, Category>();
             CreateMap<SupplierDao, Supplier>();
 
             // Filter mappings
-            CreateMap<StockItemFilterDto, StockItemFilter>();
-            CreateMap<StockItemFilter, StockItemFilterDao>();
+            CreateMap<StorageItemFilterDto, StorageItemFilter>();
+            CreateMap<StorageItemFilter, StorageItemFilterDao>();
         }
     }
 }

@@ -1,5 +1,5 @@
 using AutoMapper;
-using FlowCycle.Domain.Stock;
+using FlowCycle.Domain.Storage;
 using FlowCycle.Domain.Storage;
 using FlowCycle.Persistance.Repositories;
 using FlowCycle.Persistance.Storage;
@@ -10,36 +10,36 @@ using System.Reflection;
 namespace FlowCycle.Tests.Services
 {
     [TestFixture]
-    public class StockItemImportServiceTests
+    public class StorageItemImportServiceTests
     {
-        private Mock<IStockItemRepository> _stockItemRepositoryMock;
+        private Mock<IStorageItemRepository> _StorageItemRepositoryMock;
         private Mock<ISupplierRepository> _supplierRepositoryMock;
         private Mock<ICategoryRepository> _categoryRepositoryMock;
         private Mock<IProjectRepository> _projectRepositoryMock;
-        private Mock<ILogger<StockItemImportService>> _loggerMock;
+        private Mock<ILogger<StorageItemImportService>> _loggerMock;
         private IMapper _mapper;
-        private StockItemImportService _service;
+        private StorageItemImportService _service;
 
         [SetUp]
         public void Setup()
         {
-            _stockItemRepositoryMock = new Mock<IStockItemRepository>();
+            _StorageItemRepositoryMock = new Mock<IStorageItemRepository>();
             _supplierRepositoryMock = new Mock<ISupplierRepository>();
             _categoryRepositoryMock = new Mock<ICategoryRepository>();
             _projectRepositoryMock = new Mock<IProjectRepository>();
-            _loggerMock = new Mock<ILogger<StockItemImportService>>();
+            _loggerMock = new Mock<ILogger<StorageItemImportService>>();
 
             var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<SupplierDao, Supplier>().ReverseMap();
                 cfg.CreateMap<CategoryDao, Category>().ReverseMap();
                 cfg.CreateMap<ProjectDao, Project>().ReverseMap();
-                cfg.CreateMap<StockItemDao, StockItem>().ReverseMap();
+                cfg.CreateMap<StorageItemDao, StorageItem>().ReverseMap();
             });
             _mapper = mapperConfig.CreateMapper();
 
-            _service = new StockItemImportService(
-                _stockItemRepositoryMock.Object,
+            _service = new StorageItemImportService(
+                _StorageItemRepositoryMock.Object,
                 _supplierRepositoryMock.Object,
                 _categoryRepositoryMock.Object,
                 _projectRepositoryMock.Object,

@@ -13,10 +13,10 @@ using System.Threading.Tasks;
 namespace FlowCycle.Tests.Repositories
 {
     [TestFixture]
-    public class StockItemRepositoryTests
+    public class StorageItemRepositoryTests
     {
         private AppDbContext _context;
-        private StockItemRepository _repository;
+        private StorageItemRepository _repository;
 
         [SetUp]
         public void Setup()
@@ -26,7 +26,7 @@ namespace FlowCycle.Tests.Repositories
                 .Options;
 
             _context = new AppDbContext(options);
-            _repository = new StockItemRepository(_context);
+            _repository = new StorageItemRepository(_context);
 
             // Seed test data
             var supplier = new SupplierDao { Id = 1, Name = "Test Supplier" };
@@ -37,14 +37,14 @@ namespace FlowCycle.Tests.Repositories
             _context.Categories.Add(category);
             _context.Projects.Add(project);
 
-            var items = new List<StockItemDao>
+            var items = new List<StorageItemDao>
             {
-                new StockItemDao { Id = 1, Name = "Item 1", Code = "CODE1", Supplier = supplier, Category = category, Project = project, SinglePrice = 100, Amount = 10, Measure = "Unit" },
-                new StockItemDao { Id = 2, Name = "Item 2", Code = "CODE2", Supplier = supplier, Category = category, Project = project, SinglePrice = 200, Amount = 20, Measure = "Unit" },
-                new StockItemDao { Id = 3, Name = "Item 3", Code = "CODE3", Supplier = supplier, Category = category, Project = project, SinglePrice = 300, Amount = 30, Measure = "Unit" }
+                new StorageItemDao { Id = 1, Name = "Item 1", Code = "CODE1", Supplier = supplier, Category = category, Project = project, SinglePrice = 100, Amount = 10, Measure = "Unit" },
+                new StorageItemDao { Id = 2, Name = "Item 2", Code = "CODE2", Supplier = supplier, Category = category, Project = project, SinglePrice = 200, Amount = 20, Measure = "Unit" },
+                new StorageItemDao { Id = 3, Name = "Item 3", Code = "CODE3", Supplier = supplier, Category = category, Project = project, SinglePrice = 300, Amount = 30, Measure = "Unit" }
             };
 
-            _context.Stocks.AddRange(items);
+            _context.Storages.AddRange(items);
             _context.SaveChanges();
         }
 
@@ -92,7 +92,7 @@ namespace FlowCycle.Tests.Repositories
         public async Task GetListAsync_WithNameFilter_ReturnsFilteredItems()
         {
             // Arrange
-            var filter = new StockItemFilterDao { Name = "Item 1" };
+            var filter = new StorageItemFilterDao { Name = "Item 1" };
 
             // Act
             var result = await _repository.GetListAsync(filter, CancellationToken.None);
@@ -107,7 +107,7 @@ namespace FlowCycle.Tests.Repositories
         public async Task GetListAsync_WithSupplierFilter_ReturnsFilteredItems()
         {
             // Arrange
-            var filter = new StockItemFilterDao { Supplier = "Test" };
+            var filter = new StorageItemFilterDao { Supplier = "Test" };
 
             // Act
             var result = await _repository.GetListAsync(filter, CancellationToken.None);
@@ -121,7 +121,7 @@ namespace FlowCycle.Tests.Repositories
         public async Task GetListAsync_WithSorting_ReturnsSortedItems()
         {
             // Arrange
-            var filter = new StockItemFilterDao { SortColumn = "SinglePrice", SortDescending = true };
+            var filter = new StorageItemFilterDao { SortColumn = "SinglePrice", SortDescending = true };
 
             // Act
             var result = await _repository.GetListAsync(filter, CancellationToken.None);
@@ -137,7 +137,7 @@ namespace FlowCycle.Tests.Repositories
         public async Task CreateAsync_ValidItem_CreatesAndReturnsItem()
         {
             // Arrange
-            var newItem = new StockItemDao
+            var newItem = new StorageItemDao
             {
                 Name = "New Item",
                 Code = "NEW1",
@@ -157,7 +157,7 @@ namespace FlowCycle.Tests.Repositories
             Assert.That(result.Id, Is.GreaterThan(0));
             Assert.That(result.Name, Is.EqualTo("New Item"));
 
-            var savedItem = await _context.Stocks.FindAsync(result.Id);
+            var savedItem = await _context.Storages.FindAsync(result.Id);
             Assert.That(savedItem, Is.Not.Null);
             Assert.That(savedItem.Name, Is.EqualTo("New Item"));
         }
@@ -166,7 +166,7 @@ namespace FlowCycle.Tests.Repositories
         public async Task UpdateAsync_ExistingItem_UpdatesAndReturnsItem()
         {
             // Arrange
-            var item = await _context.Stocks.FindAsync(1);
+            var item = await _context.Storages.FindAsync(1);
             item.Name = "Updated Item";
 
             // Act
@@ -176,7 +176,7 @@ namespace FlowCycle.Tests.Repositories
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Name, Is.EqualTo("Updated Item"));
 
-            var updatedItem = await _context.Stocks.FindAsync(1);
+            var updatedItem = await _context.Storages.FindAsync(1);
             Assert.That(updatedItem.Name, Is.EqualTo("Updated Item"));
         }
 
@@ -184,7 +184,7 @@ namespace FlowCycle.Tests.Repositories
         public async Task UpdateAsync_NonExistingItem_ReturnsNull()
         {
             // Arrange
-            var item = new StockItemDao { Id = 999, Name = "Non Existing" };
+            var item = new StorageItemDao { Id = 999, Name = "Non Existing" };
 
             // Act
             var result = await _repository.UpdateAsync(item, CancellationToken.None);
@@ -197,14 +197,14 @@ namespace FlowCycle.Tests.Repositories
         public async Task DeleteAsync_ExistingItem_RemovesItem()
         {
             // Arrange
-            var item = await _context.Stocks.FindAsync(1);
+            var item = await _context.Storages.FindAsync(1);
 
             // Act
-            await _repository.DeleteAsync(item, CancellationToken.None);
+            await _repository.DeleteAsync(item.Id, CancellationToken.None);
 
             // Assert
-            var deletedItem = await _context.Stocks.FindAsync(1);
+            var deletedItem = await _context.Storages.FindAsync(1);
             Assert.That(deletedItem, Is.Null);
         }
     }
-} 
+}

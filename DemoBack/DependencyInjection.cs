@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using FlowCycle.Domain.Stock;
+using FlowCycle.Domain.Storage;
 using FlowCycle.Domain.Costing;
 using FlowCycle.Persistance.Repositories.Models;
 
@@ -27,7 +27,7 @@ namespace FlowCycle.Api
             });
 
             // Repository registrations
-            services.AddScoped<IStockItemRepository, StockItemRepository>();
+            services.AddScoped<IStorageItemRepository, StorageItemRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
@@ -49,8 +49,12 @@ namespace FlowCycle.Api
         public static IServiceCollection AddBusinessServiceLayer(this IServiceCollection services)
         {
             services.AddScoped<IStorageItemService, StorageItemService>();
-            services.AddScoped<IStockItemImportService, StockItemImportService>();
-            services.AddScoped<IStockItemExportService, StockItemExportService>();
+            services.AddScoped<IStorageItemImportService, StorageItemImportService>();
+            services.AddScoped<IStorageItemExportService, StorageItemExportService>();
+
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<ISupplierService, SupplierService>();
 
             // Costing services
             services.AddScoped<ICostingMaterialService, CostingMaterialService>();
@@ -65,7 +69,7 @@ namespace FlowCycle.Api
 
         public static IServiceCollection AddAutoMapperProfiles(this IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(StockProfiles));
+            services.AddAutoMapper(typeof(StorageProfiles));
 
             return services;
         }

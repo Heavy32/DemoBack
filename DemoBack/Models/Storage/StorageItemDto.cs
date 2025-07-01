@@ -1,8 +1,6 @@
-﻿
-
-namespace FlowCycle.Api.Storage
+﻿namespace FlowCycle.Api.Storage
 {
-    public class StockItemDto
+    public class StorageItemDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -13,9 +11,13 @@ namespace FlowCycle.Api.Storage
         public double SinglePrice { get; set; }
         public double VAT { get; set; }
         public double TotalPrice { get; set; }
-        public DateTime ReceiptDate { get; set; }
+        public DateTime ArrivalDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
         public SupplierDto Supplier { get; set; }
         public ProjectDto Project { get; set; }
         public bool IsArchived { get; set; }
+        public int ArchivedCount { get; set; }
+        public DateTime UpdateDate { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }

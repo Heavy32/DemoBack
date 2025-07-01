@@ -1,9 +1,9 @@
-namespace FlowCycle.Domain.Stock
+namespace FlowCycle.Domain.Storage
 {
-    public interface IStockItemExportService
+    public interface IStorageItemExportService
     {
         /// <summary>
-        /// Exports stock items to an Excel file
+        /// Exports Storage items to an Excel file
         /// </summary>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Memory stream containing the Excel file</returns>

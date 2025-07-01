@@ -2,6 +2,7 @@ using AutoMapper;
 using FlowCycle.Domain.Storage.Models;
 using FlowCycle.Persistance.Repositories;
 using FlowCycle.Persistance.Repositories.Models;
+using FlowCycle.Persistance.UnitOfWork;
 
 namespace FlowCycle.Domain.Costing
 {
@@ -9,11 +10,13 @@ namespace FlowCycle.Domain.Costing
     {
         private readonly ICostingRepository _costingRepository;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CostingService(ICostingRepository costingRepository, IMapper mapper)
+        public CostingService(ICostingRepository costingRepository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _costingRepository = costingRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<CostingModel> GetByIdAsync(int id, CancellationToken ct)
@@ -35,6 +38,7 @@ namespace FlowCycle.Domain.Costing
             dao.CreatedAt = DateTime.UtcNow;
             dao.UpdatedAt = DateTime.UtcNow;
             var created = await _costingRepository.CreateAsync(dao, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
             return _mapper.Map<CostingModel>(created);
         }
 
@@ -45,6 +49,7 @@ namespace FlowCycle.Domain.Costing
             dao.CreatedAt = existing.CreatedAt;
             dao.UpdatedAt = DateTime.UtcNow;
             var updated = await _costingRepository.UpdateAsync(dao, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
             return _mapper.Map<CostingModel>(updated);
         }
 
@@ -52,6 +57,7 @@ namespace FlowCycle.Domain.Costing
         {
             var costing = await _costingRepository.GetByIdAsync(id, ct);
             await _costingRepository.DeleteAsync(id, ct);
+            await _unitOfWork.SaveChangesAsync(ct);
         }
     }
 }

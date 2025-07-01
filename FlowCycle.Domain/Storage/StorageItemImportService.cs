@@ -3,20 +3,20 @@ using FlowCycle.Domain.Storage;
 using FlowCycle.Persistance.Repositories;
 using FlowCycle.Persistance.Storage;
 using ClosedXML.Excel;
-using FlowCycle.Domain.Stock.Exceptions;
+using FlowCycle.Domain.Storage.Exceptions;
 
-namespace FlowCycle.Domain.Stock
+namespace FlowCycle.Domain.Storage
 {
-    public class StockItemImportService : IStockItemImportService
+    public class StorageItemImportService : IStorageItemImportService
     {
-        private readonly IStockItemRepository _repository;
+        private readonly IStorageItemRepository _repository;
         private readonly ISupplierRepository _supplierRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
 
-        public StockItemImportService(
-            IStockItemRepository repository,
+        public StorageItemImportService(
+            IStorageItemRepository repository,
             ISupplierRepository supplierRepository,
             ICategoryRepository categoryRepository,
             IProjectRepository projectRepository,
@@ -29,13 +29,13 @@ namespace FlowCycle.Domain.Stock
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<StockItem>> ImportFromExcelAsync(Stream fileStream, CancellationToken ct = default)
+        public async Task<IEnumerable<StorageItem>> ImportFromExcelAsync(Stream fileStream, CancellationToken ct = default)
         {
             using var workbook = new XLWorkbook(fileStream);
             var worksheet = workbook.Worksheet(1); // First worksheet
             var rows = worksheet.RowsUsed().Skip(2); // Skip header row
 
-            var stockItems = new List<StockItemDao>();
+            var StorageItems = new List<StorageItemDao>();
 
             foreach (var row in rows)
             {
@@ -62,12 +62,15 @@ namespace FlowCycle.Domain.Stock
                     throw new EntityNotFoundException("Project", projectName);
                 }
 
-                var rawDate = row.Cell(11).GetValue<DateTime>();
-                var receiptDate = rawDate.Kind == DateTimeKind.Utc
-                    ? rawDate
-                    : DateTime.SpecifyKind(rawDate, DateTimeKind.Utc);
+                var rawArrivalDate = row.Cell(11).GetValue<DateTime>();
+                var arrivalDate = rawArrivalDate.Kind == DateTimeKind.Utc
+                    ? rawArrivalDate
+                    : DateTime.SpecifyKind(rawArrivalDate, DateTimeKind.Utc);
 
-                var stockItem = new StockItemDao
+                // Optionally get ExpirationDate from Excel, or set a default
+                var expirationDate = DateTime.MinValue; // TODO: update if you have a column for this
+
+                var StorageItem = new StorageItemDao
                 {
                     Name = row.Cell(3).GetString(),
                     Code = row.Cell(5).GetString(),
@@ -77,22 +80,26 @@ namespace FlowCycle.Domain.Stock
                     Supplier = supplierDao,
                     Category = categoryDao,
                     Project = projectDao,
-                    ReceiptDate = receiptDate,
+                    ArrivalDate = arrivalDate,
+                    ExpirationDate = expirationDate,
                     VAT = row.Cell(9).GetValue<double>(),
                     IsArchived = false,
                     TotalPrice = row.Cell(10).GetValue<double>(),
+                    ArchivedCount = 0,
+                    UpdateDate = DateTime.UtcNow,
+                    CreateDate = DateTime.UtcNow
                 };
 
-                stockItems.Add(stockItem);
+                StorageItems.Add(StorageItem);
             }
 
             // Save all items to the database
-            foreach (var item in stockItems)
+            foreach (var item in StorageItems)
             {
-                var safeReceiptDate = item.ReceiptDate.Kind == DateTimeKind.Utc
-                    ? item.ReceiptDate
-                    : DateTime.SpecifyKind(item.ReceiptDate, DateTimeKind.Utc);
-                var dao = new StockItemDao
+                var safeArrivalDate = item.ArrivalDate.Kind == DateTimeKind.Utc
+                    ? item.ArrivalDate
+                    : DateTime.SpecifyKind(item.ArrivalDate, DateTimeKind.Utc);
+                var dao = new StorageItemDao
                 {
                     Name = item.Name,
                     Code = item.Code,
@@ -102,15 +109,19 @@ namespace FlowCycle.Domain.Stock
                     Supplier = item.Supplier,
                     Category = item.Category,
                     Project = item.Project,
-                    ReceiptDate = safeReceiptDate,
+                    ArrivalDate = safeArrivalDate,
+                    ExpirationDate = item.ExpirationDate,
                     VAT = item.VAT,
                     IsArchived = item.IsArchived,
                     TotalPrice = item.TotalPrice,
+                    ArchivedCount = item.ArchivedCount,
+                    UpdateDate = item.UpdateDate,
+                    CreateDate = item.CreateDate
                 };
                 await _repository.CreateAsync(dao, ct);
             }
 
-            return stockItems.Select(_mapper.Map<StockItem>);
+            return StorageItems.Select(_mapper.Map<StorageItem>);
         }
     }
-} 
+}

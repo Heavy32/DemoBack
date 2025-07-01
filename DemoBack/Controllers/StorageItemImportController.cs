@@ -1,37 +1,37 @@
 using AutoMapper;
 using FlowCycle.Api.Storage;
-using FlowCycle.Domain.Stock;
+using FlowCycle.Domain.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace FlowCycle.Api.Controllers
 {
     /// <summary>
-    /// API for importing stock items from Excel files
+    /// API for importing Storage items from Excel files
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "Storage")]
-    public class StockItemImportController : ControllerBase
+    public class StorageItemImportController : ControllerBase
     {
-        private readonly IStockItemImportService _importService;
+        private readonly IStorageItemImportService _importService;
         private readonly IMapper _mapper;
 
-        public StockItemImportController(IStockItemImportService importService, IMapper mapper)
+        public StorageItemImportController(IStorageItemImportService importService, IMapper mapper)
         {
             _importService = importService;
             _mapper = mapper;
         }
 
         /// <summary>
-        /// Import stock items from an Excel file
+        /// Import Storage items from an Excel file
         /// </summary>
         /// <param name="file">The Excel file to import</param>
         /// <param name="ct">Cancellation token</param>
-        /// <returns>The list of imported stock items</returns>
+        /// <returns>The list of imported Storage items</returns>
         [HttpPost("excel")]
-        [SwaggerOperation(OperationId = "ImportStockItemsFromExcel")]
-        [SwaggerResponse(200, "Stock items imported successfully", typeof(IEnumerable<StockItemDto>))]
+        [SwaggerOperation(OperationId = "ImportStorageItemsFromExcel")]
+        [SwaggerResponse(200, "Storage items imported successfully", typeof(IEnumerable<StorageItemDto>))]
         [SwaggerResponse(400, "Invalid file format or content")]
         public async Task<IActionResult> ImportFromExcel(
             IFormFile file,
@@ -49,7 +49,7 @@ namespace FlowCycle.Api.Controllers
 
             using var stream = file.OpenReadStream();
             var importedItems = await _importService.ImportFromExcelAsync(stream, ct);
-            var dtos = _mapper.Map<IEnumerable<StockItemDto>>(importedItems);
+            var dtos = _mapper.Map<IEnumerable<StorageItemDto>>(importedItems);
 
             return Ok(dtos);
         }

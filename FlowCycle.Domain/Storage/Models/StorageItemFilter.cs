@@ -1,6 +1,6 @@
-namespace FlowCycle.Domain.Stock.Models
+namespace FlowCycle.Domain.Storage.Models
 {
-    public class StockItemFilter
+    public class StorageItemFilter
     {
         public string? Name { get; set; }
         public string? Supplier { get; set; }

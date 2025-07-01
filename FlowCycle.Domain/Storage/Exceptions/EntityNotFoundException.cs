@@ -1,4 +1,4 @@
-namespace FlowCycle.Domain.Stock.Exceptions
+namespace FlowCycle.Domain.Storage.Exceptions
 {
     public class EntityNotFoundException : Exception
     {
