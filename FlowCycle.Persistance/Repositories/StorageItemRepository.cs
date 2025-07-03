@@ -51,6 +51,15 @@ namespace FlowCycle.Persistance.Repositories
                     query = query.Where(s => s.Code.Contains(filter.Code));
                 }
 
+                if (filter.ArrivalDateFrom.HasValue)
+                {
+                    query = query.Where(s => s.ArrivalDate >= filter.ArrivalDateFrom.Value);
+                }
+                if (filter.ArrivalDateTo.HasValue)
+                {
+                    query = query.Where(s => s.ArrivalDate <= filter.ArrivalDateTo.Value);
+                }
+
                 // Apply sorting
                 if (!string.IsNullOrWhiteSpace(filter.SortColumn))
                 {
