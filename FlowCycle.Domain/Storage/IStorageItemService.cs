@@ -10,5 +10,6 @@ namespace FlowCycle.Domain.Storage
         Task<StorageItem> CreateAsync(StorageItem item, CancellationToken ct = default);
         Task<StorageItem> UpdateAsync(StorageItem item, CancellationToken ct = default);
         Task<bool> DeleteAsync(int id, CancellationToken ct = default);
+        Task<IEnumerable<StorageItem>> GetListAsync(StorageItemFilter? filter = null, CancellationToken ct = default);
     }
 }

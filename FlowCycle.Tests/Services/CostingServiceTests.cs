@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FlowCycle.Domain.Storage.Models;
+using FlowCycle.Persistance.UnitOfWork;
 
 namespace FlowCycle.Tests.Services
 {
@@ -18,6 +19,7 @@ namespace FlowCycle.Tests.Services
     {
         private Mock<ICostingRepository> _costingRepositoryMock;
         private Mock<IMapper> _mapperMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
         private CostingService _costingService;
         private CancellationToken _defaultCancellationToken;
 
@@ -26,7 +28,8 @@ namespace FlowCycle.Tests.Services
         {
             _costingRepositoryMock = new Mock<ICostingRepository>();
             _mapperMock = new Mock<IMapper>();
-            _costingService = new CostingService(_costingRepositoryMock.Object, _mapperMock.Object);
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _costingService = new CostingService(_costingRepositoryMock.Object, _mapperMock.Object, _unitOfWorkMock.Object);
             _defaultCancellationToken = CancellationToken.None;
         }
 

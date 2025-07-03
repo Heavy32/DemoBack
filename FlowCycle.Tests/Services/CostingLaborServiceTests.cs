@@ -2,6 +2,7 @@ using FlowCycle.Domain.Costing;
 using FlowCycle.Domain.Costing.Models;
 using FlowCycle.Persistance.Repositories;
 using FlowCycle.Persistance.Repositories.Models;
+using FlowCycle.Persistance.UnitOfWork;
 using Moq;
 using NUnit.Framework;
 using AutoMapper;
@@ -18,6 +19,7 @@ namespace FlowCycle.Tests.Services
     {
         private Mock<ICostingLaborRepository> _costingLaborRepositoryMock;
         private Mock<IMapper> _mapperMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
         private CostingLaborService _costingLaborService;
         private CancellationToken _defaultCancellationToken;
 
@@ -26,7 +28,8 @@ namespace FlowCycle.Tests.Services
         {
             _costingLaborRepositoryMock = new Mock<ICostingLaborRepository>();
             _mapperMock = new Mock<IMapper>();
-            _costingLaborService = new CostingLaborService(_costingLaborRepositoryMock.Object, _mapperMock.Object);
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _costingLaborService = new CostingLaborService(_costingLaborRepositoryMock.Object, _mapperMock.Object, _unitOfWorkMock.Object);
             _defaultCancellationToken = CancellationToken.None;
         }
 

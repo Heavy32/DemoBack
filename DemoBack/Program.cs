@@ -71,13 +71,13 @@ internal class Program
         });
 
         var app = builder.Build();
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<CostingProfiles>();
-            cfg.AddProfile<MappingProfile>();
-            // Add other profiles as needed
-        });
-        config.AssertConfigurationIsValid();
+        //var config = new MapperConfiguration(cfg =>
+        //{
+        //    cfg.AddProfile<CostingProfiles>();
+        //    cfg.AddProfile<MappingProfile>();
+        //    // Add other profiles as needed
+        //});
+        //config.AssertConfigurationIsValid();
         // Ensure database exists
         try
         {

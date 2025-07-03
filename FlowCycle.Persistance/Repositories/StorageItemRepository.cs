@@ -37,7 +37,8 @@ namespace FlowCycle.Persistance.Repositories
                 // Apply filters
                 if (!string.IsNullOrWhiteSpace(filter.Name))
                 {
-                    query = query.Where(s => s.Name.Contains(filter.Name));
+                    var nameLower = filter.Name.ToLower();
+                    query = query.Where(s => s.Name.ToLower().Contains(nameLower));
                 }
 
                 if (!string.IsNullOrWhiteSpace(filter.Supplier))

@@ -64,14 +64,14 @@ namespace FlowCycle.Domain.Storage
                 worksheet.Cell(row, 6).Value = item.SinglePrice;
                 worksheet.Cell(row, 7).Value = item.VAT;
                 worksheet.Cell(row, 8).Value = item.TotalPrice;
-                worksheet.Cell(row, 9).Value = item.ArrivalDate;
-                worksheet.Cell(row, 10).Value = item.ExpirationDate;
+                worksheet.Cell(row, 9).Value = item.ArrivalDate.ToString("dd-MM-yyyy HH:mm:ss");
+                worksheet.Cell(row, 10).Value = item.ExpirationDate.ToString("dd-MM-yyyy HH:mm:ss");
                 worksheet.Cell(row, 11).Value = item.Supplier?.Name;
                 worksheet.Cell(row, 12).Value = item.Project?.Name;
                 worksheet.Cell(row, 13).Value = item.IsArchived;
                 worksheet.Cell(row, 14).Value = item.ArchivedCount;
-                worksheet.Cell(row, 15).Value = item.UpdateDate;
-                worksheet.Cell(row, 16).Value = item.CreateDate;
+                worksheet.Cell(row, 15).Value = item.UpdateDate.ToString("dd-MM-yyyy HH:mm:ss");
+                worksheet.Cell(row, 16).Value = item.CreateDate.ToString("dd-MM-yyyy HH:mm:ss");
                 row++;
             }
 

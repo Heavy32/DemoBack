@@ -63,6 +63,23 @@ namespace FlowCycle.Api.Controllers
         }
 
         /// <summary>
+        /// Get a list of storage items with optional filtering and sorting
+        /// </summary>
+        /// <param name="filter">Optional filter and sort parameters</param>
+        /// <param name="ct">Cancellation token</param>
+        /// <returns>List of storage items</returns>
+        [HttpGet("list")]
+        [SwaggerOperation(OperationId = "GetStorageItemsWithFilter")]
+        [SwaggerResponse(200, "Returns the filtered list of storage items", typeof(IEnumerable<StorageItemDto>))]
+        public async Task<IActionResult> GetList([FromQuery] StorageItemFilterDto? filter, CancellationToken ct = default)
+        {
+            var domainFilter = filter != null ? _mapper.Map<StorageItemFilter>(filter) : null;
+            var result = await _storageItemService.GetListAsync(domainFilter, ct);
+            var dto = result.Select(_mapper.Map<StorageItemDto>);
+            return Ok(dto);
+        }
+
+        /// <summary>
         /// Create a new storage item
         /// </summary>
         /// <param name="StorageItemDto">Storage item data</param>

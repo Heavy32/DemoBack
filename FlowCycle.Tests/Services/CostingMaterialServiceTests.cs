@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using FlowCycle.Persistance.UnitOfWork;
 
 namespace FlowCycle.Tests.Services
 {
@@ -18,6 +19,7 @@ namespace FlowCycle.Tests.Services
     {
         private Mock<ICostingMaterialRepository> _costingMaterialRepositoryMock;
         private Mock<IMapper> _mapperMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
         private CostingMaterialService _costingMaterialService;
         private CancellationToken _defaultCancellationToken;
 
@@ -26,7 +28,8 @@ namespace FlowCycle.Tests.Services
         {
             _costingMaterialRepositoryMock = new Mock<ICostingMaterialRepository>();
             _mapperMock = new Mock<IMapper>();
-            _costingMaterialService = new CostingMaterialService(_costingMaterialRepositoryMock.Object, _mapperMock.Object);
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _costingMaterialService = new CostingMaterialService(_costingMaterialRepositoryMock.Object, _mapperMock.Object, _unitOfWorkMock.Object);
             _defaultCancellationToken = CancellationToken.None;
         }
 

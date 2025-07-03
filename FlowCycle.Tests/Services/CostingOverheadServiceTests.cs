@@ -3,6 +3,7 @@ using FlowCycle.Domain.Costing;
 using FlowCycle.Domain.Costing.Models;
 using FlowCycle.Persistance.Repositories;
 using FlowCycle.Persistance.Repositories.Models;
+using FlowCycle.Persistance.UnitOfWork;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -18,6 +19,7 @@ namespace FlowCycle.Tests.Services
     {
         private Mock<ICostingOverheadRepository> _costingOverheadRepositoryMock;
         private Mock<IMapper> _mapperMock;
+        private Mock<IUnitOfWork> _unitOfWorkMock;
         private CostingOverheadService _service;
         private CancellationToken _defaultCancellationToken;
 
@@ -26,7 +28,8 @@ namespace FlowCycle.Tests.Services
         {
             _costingOverheadRepositoryMock = new Mock<ICostingOverheadRepository>();
             _mapperMock = new Mock<IMapper>();
-            _service = new CostingOverheadService(_costingOverheadRepositoryMock.Object, _mapperMock.Object);
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _service = new CostingOverheadService(_costingOverheadRepositoryMock.Object, _mapperMock.Object, _unitOfWorkMock.Object);
             _defaultCancellationToken = CancellationToken.None;
         }
 

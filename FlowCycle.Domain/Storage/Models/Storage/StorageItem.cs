@@ -1,6 +1,4 @@
-﻿
-
-namespace FlowCycle.Domain.Storage
+﻿namespace FlowCycle.Domain.Storage
 {
     public class StorageItem
     {
@@ -24,5 +22,8 @@ namespace FlowCycle.Domain.Storage
         public int ArchivedCount { get; set; }
         public DateTime UpdateDate { get; set; }
         public DateTime CreateDate { get; set; }
+        public int CategoryId { get; set; }
+        public int SupplierId { get; set; }
+        public int ProjectId { get; set; }
     }
 }

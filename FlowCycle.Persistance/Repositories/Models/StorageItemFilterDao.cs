@@ -7,5 +7,7 @@ namespace FlowCycle.Persistance.Repositories.Models
         public string? Code { get; set; }
         public string? SortColumn { get; set; }
         public bool SortDescending { get; set; }
+        public DateTime? ArrivalDateFrom { get; set; }
+        public DateTime? ArrivalDateTo { get; set; }
     }
-} 
+}

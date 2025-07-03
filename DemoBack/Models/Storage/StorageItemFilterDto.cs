@@ -23,9 +23,19 @@ namespace FlowCycle.Api.Storage
         public string? Code { get; set; }
 
         /// <summary>
+        /// Filter by arrival date (from)
+        /// </summary>
+        public DateTime? ArrivalDateFrom { get; set; }
+
+        /// <summary>
+        /// Filter by arrival date (to)
+        /// </summary>
+        public DateTime? ArrivalDateTo { get; set; }
+
+        /// <summary>
         /// Column to sort by. Available values: name, code, supplier, category, project, price, quantity, receiptDate, isArchived
         /// </summary>
-        [RegularExpression("^(name|code|supplier|category|project|price|quantity|receiptDate|isArchived)$", 
+        [RegularExpression("^(name|code|supplier|category|project|price|quantity|receiptDate|isArchived)$",
             ErrorMessage = "Invalid sort column. Available values: name, code, supplier, category, project, price, quantity, receiptDate, isArchived")]
         public string? SortColumn { get; set; }
 
@@ -34,4 +44,4 @@ namespace FlowCycle.Api.Storage
         /// </summary>
         public bool SortDescending { get; set; }
     }
-} 
+}

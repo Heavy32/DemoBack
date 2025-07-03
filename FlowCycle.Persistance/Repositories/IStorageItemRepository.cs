@@ -10,5 +10,6 @@ namespace FlowCycle.Persistance.Repositories
         Task<StorageItemDao> CreateAsync(StorageItemDao item, CancellationToken ct = default);
         Task<StorageItemDao> UpdateAsync(StorageItemDao item, CancellationToken ct = default);
         Task<bool> DeleteAsync(int id, CancellationToken ct = default);
+        Task<IEnumerable<StorageItemDao>> GetListAsync(StorageItemFilterDao? filter = null, CancellationToken ct = default);
     }
 }

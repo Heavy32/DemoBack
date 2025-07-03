@@ -20,15 +20,26 @@ namespace FlowCycle.Tests.Services
     {
         private Mock<IStorageItemRepository> _repositoryMock;
         private Mock<IMapper> _mapperMock;
+        private Mock<ICategoryRepository> _categoryRepositoryMock;
+        private Mock<ISupplierRepository> _supplierRepositoryMock;
+        private Mock<IProjectRepository> _projectRepositoryMock;
         private StorageItemService _service;
 
         [SetUp]
         public void Setup()
         {
-
             _repositoryMock = new Mock<IStorageItemRepository>();
             _mapperMock = new Mock<IMapper>();
-            _service = new StorageItemService(_repositoryMock.Object, _mapperMock.Object);
+            _categoryRepositoryMock = new Mock<ICategoryRepository>();
+            _supplierRepositoryMock = new Mock<ISupplierRepository>();
+            _projectRepositoryMock = new Mock<IProjectRepository>();
+            _service = new StorageItemService(
+                _repositoryMock.Object,
+                _mapperMock.Object,
+                _categoryRepositoryMock.Object,
+                _supplierRepositoryMock.Object,
+                _projectRepositoryMock.Object
+            );
         }
 
         [Test]
